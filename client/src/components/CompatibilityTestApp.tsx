@@ -7,7 +7,7 @@ import PreferenceSelection, { type SexualPreference } from './PreferenceSelectio
 import DynamicQuestionnaire, { type QuestionnaireAnswers } from './DynamicQuestionnaire';
 import ResultsPage from './ResultsPage';
 
-type AppState = 'welcome' | 'login' | 'register' | 'preferences' | 'questionnaire' | 'results';
+type AppState = 'welcome' | 'login' | 'register' | 'intentions' | 'preferences' | 'questionnaire' | 'results';
 
 interface UserData {
   id?: string;
@@ -20,6 +20,7 @@ interface UserData {
 export default function CompatibilityTestApp() {
   const [currentState, setCurrentState] = useState<AppState>('welcome');
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [selectedIntention, setSelectedIntention] = useState<UserIntention | null>(null);
   const [selectedPreference, setSelectedPreference] = useState<SexualPreference | null>(null);
   const [questionnaireAnswers, setQuestionnaireAnswers] = useState<QuestionnaireAnswers | null>(null);
 
@@ -104,7 +105,7 @@ export default function CompatibilityTestApp() {
         zodiac: user.zodiac
       });
       
-      setCurrentState('preferences');
+      setCurrentState('intentions');
     } catch (error) {
       console.error('Login error:', error);
       alert('Erro de conex\u00e3o');
@@ -153,7 +154,7 @@ export default function CompatibilityTestApp() {
         zodiac: user.zodiac
       });
       
-      setCurrentState('preferences');
+      setCurrentState('intentions');
     } catch (error) {
       console.error('Registration error:', error);
       alert('Erro de conex\u00e3o');
@@ -219,14 +220,21 @@ export default function CompatibilityTestApp() {
     }
   };
   
+  const handleSelectIntention = (intention: UserIntention) => {
+    setSelectedIntention(intention);
+    setCurrentState('preferences');
+  };
+  
   const handleRetakeTest = () => {
+    setSelectedIntention(null);
     setSelectedPreference(null);
     setQuestionnaireAnswers(null);
-    setCurrentState('preferences');
+    setCurrentState('intentions');
   };
   
   const handleLogout = () => {
     setUserData(null);
+    setSelectedIntention(null);
     setSelectedPreference(null);
     setQuestionnaireAnswers(null);
     setCurrentState('welcome');
@@ -258,21 +266,30 @@ export default function CompatibilityTestApp() {
         />
       );
       
+    case 'intentions':
+      return (
+        <IntentionSelection 
+          onBack={handleLogout}
+          onNext={handleSelectIntention}
+        />
+      );
+      
     case 'preferences':
       return (
         <PreferenceSelection 
-          onBack={handleLogout}
+          onBack={() => setCurrentState('intentions')}
           onSelectPreference={handleSelectPreference}
         />
       );
       
     case 'questionnaire':
-      if (!selectedPreference) {
+      if (!selectedIntention || !selectedPreference) {
         setCurrentState('preferences');
         return null;
       }
       return (
         <DynamicQuestionnaire 
+          intention={selectedIntention}
           preference={selectedPreference}
           onBack={() => setCurrentState('preferences')}
           onComplete={handleQuestionnaireComplete}
@@ -280,7 +297,7 @@ export default function CompatibilityTestApp() {
       );
       
     case 'results':
-      if (!userData || !selectedPreference || !questionnaireAnswers) {
+      if (!userData || !selectedIntention || !selectedPreference || !questionnaireAnswers) {
         setCurrentState('welcome');
         return null;
       }

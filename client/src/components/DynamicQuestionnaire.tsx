@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { SexualPreference } from './PreferenceSelection';
 import { getQuestionsForIntentionAndRole, getFollowUpQuestions, type AdaptiveQuestion, type UserIntention, type SexualRole } from '@shared/questionBank';
+import { AlertCircle } from 'lucide-react';
 
 interface DynamicQuestionnaireProps {
   intention: UserIntention;
@@ -28,8 +29,21 @@ interface QuestionnaireState {
   answeredQuestions: Set<string>;
 }
 
+// Helper function to safely map SexualPreference to SexualRole
+function mapPreferenceToRole(preference: SexualPreference): SexualRole {
+  // Both types are identical, but this ensures type safety
+  const mapping: Record<SexualPreference, SexualRole> = {
+    'ATIVO': 'ATIVO',
+    'VERSATIL_ATIVO': 'VERSATIL_ATIVO', 
+    'VERSATIL_PASS': 'VERSATIL_PASS',
+    'PASS': 'PASS'
+  };
+  return mapping[preference];
+}
+
 export default function DynamicQuestionnaire({ intention, preference, onBack, onComplete }: DynamicQuestionnaireProps) {
-  const initialQuestions = getQuestionsForIntentionAndRole(intention, preference as SexualRole);
+  const role = mapPreferenceToRole(preference);
+  const initialQuestions = getQuestionsForIntentionAndRole(intention, role);
   
   const [questionnaireState, setQuestionnaireState] = useState<QuestionnaireState>({
     questionQueue: initialQuestions,
@@ -39,10 +53,14 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   
   const [answers, setAnswers] = useState<QuestionnaireAnswers>({});
   
-  const currentQuestion = questionnaireState.questionQueue[questionnaireState.currentIndex];
-  const progress = ((questionnaireState.currentIndex + 1) / questionnaireState.questionQueue.length) * 100;
+  // Safety guards
+  const hasQuestions = questionnaireState.questionQueue.length > 0;
+  const currentQuestion = hasQuestions ? questionnaireState.questionQueue[questionnaireState.currentIndex] : null;
+  const progress = hasQuestions ? ((questionnaireState.currentIndex + 1) / questionnaireState.questionQueue.length) * 100 : 0;
   
   const handleAnswer = (value: string | number) => {
+    if (!currentQuestion) return;
+    
     const questionId = currentQuestion.id;
     
     setAnswers(prev => ({
@@ -54,7 +72,7 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
     
     if (followUpIds.length > 0) {
       setQuestionnaireState(prev => {
-        const allQuestions = getQuestionsForIntentionAndRole(intention, preference as SexualRole);
+        const allQuestions = getQuestionsForIntentionAndRole(intention, role);
         const followUpQuestions = followUpIds
           .map(id => allQuestions.find((q: AdaptiveQuestion) => q.id === id))
           .filter((q): q is AdaptiveQuestion => q !== undefined && !prev.answeredQuestions.has(q.id));
@@ -80,6 +98,8 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   };
   
   const canProceed = () => {
+    if (!currentQuestion) return false;
+    
     const answer = answers[currentQuestion.id];
     if (currentQuestion.required && (!answer || answer === '')) {
       return false;
@@ -108,6 +128,8 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   };
   
   const renderQuestion = () => {
+    if (!currentQuestion) return null;
+    
     const answer = answers[currentQuestion.id];
     
     switch (currentQuestion.type) {
@@ -160,6 +182,38 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
     }
   };
   
+  // Error state when no questions are found
+  if (!hasQuestions) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary via-primary/90 to-accent p-4">
+        <div className="container mx-auto max-w-2xl pt-8">
+          <Card className="p-8" data-testid="card-questionnaire-error">
+            <div className="mb-6">
+              <Button variant="ghost" onClick={onBack} className="p-0" data-testid="button-back">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
+            </div>
+            
+            <div className="text-center py-8">
+              <AlertCircle className="mx-auto h-16 w-16 text-destructive mb-4" data-testid="icon-error" />
+              <h3 className="text-xl font-bold mb-4 text-foreground" data-testid="text-error-title">
+                Nenhuma pergunta encontrada
+              </h3>
+              <p className="text-muted-foreground mb-6" data-testid="text-error-description">
+                Não conseguimos encontrar perguntas para a combinação selecionada.
+                Por favor, volte e tente novamente.
+              </p>
+              <Button onClick={onBack} data-testid="button-back-to-selection">
+                Voltar à Seleção
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary/90 to-accent p-4">
       <div className="container mx-auto max-w-2xl pt-8">
@@ -177,7 +231,7 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
                 Pergunta {questionnaireState.currentIndex + 1} de {questionnaireState.questionQueue.length}
               </Badge>
               <Badge data-testid="badge-category">
-                {currentQuestion.category}
+                {currentQuestion?.category}
               </Badge>
             </div>
             <Progress value={progress} className="h-2" data-testid="progress-bar" />
@@ -185,8 +239,8 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
           
           <div className="mb-8">
             <h3 className="text-xl font-bold mb-6 text-foreground" data-testid="text-question">
-              {currentQuestion.question}
-              {currentQuestion.required && <span className="text-destructive ml-1">*</span>}
+              {currentQuestion?.question}
+              {currentQuestion?.required && <span className="text-destructive ml-1">*</span>}
             </h3>
             
             {renderQuestion()}
