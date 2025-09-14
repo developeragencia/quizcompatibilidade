@@ -75,6 +75,22 @@ const getQuestionsForPreference = (preference: SexualPreference): Question[] => 
       question: 'Que tipo de relacionamento você busca?',
       options: ['Algo sério e duradouro', 'Diversão sem compromisso', 'Ver no que dá', 'Não sei ainda'],
       required: true
+    },
+    {
+      id: 'communication_style',
+      category: 'Relacionamento',
+      type: 'radio',
+      question: 'Como você prefere se comunicar durante o sexo?',
+      options: ['Muito verbal e expressivo', 'Alguns gemidos e palavras', 'Mais silencioso', 'Depende do momento'],
+      required: true
+    },
+    {
+      id: 'aftercare_importance',
+      category: 'Relacionamento',
+      type: 'radio',
+      question: 'Quão importante é o carinho depois do sexo?',
+      options: ['Fundamental, adoro conversar e abraçar', 'Gosto de um tempinho junto', 'Prefiro um pouco de espaço', 'Cada um pro seu lado'],
+      required: true
     }
   ];
 
@@ -113,6 +129,30 @@ const getQuestionsForPreference = (preference: SexualPreference): Question[] => 
         type: 'radio',
         question: 'Como você gosta do sexo?',
         options: ['Intenso e quente', 'Romântico e suave', 'Varia o humor', 'Experimental'],
+        required: true
+      },
+      {
+        id: 'stamina_confidence',
+        category: 'Físico - Ativo',
+        type: 'radio',
+        question: 'Como você avalia sua resistência na cama?',
+        options: ['Excelente, aguento bastante', 'Boa na maioria das vezes', 'Média, depende do dia', 'Poderia melhorar'],
+        required: true
+      },
+      {
+        id: 'foreplay_preference',
+        category: 'Preferências Sexuais',
+        type: 'radio',
+        question: 'Quanto tempo você gosta de preliminares?',
+        options: ['Adoro longas preliminares', 'Um tempinho é bom', 'Prefiro ir direto ao ponto', 'Depende da situação'],
+        required: true
+      },
+      {
+        id: 'dirty_talk_ativo',
+        category: 'Preferências Sexuais',
+        type: 'radio',
+        question: 'Você gosta de falar coisas quentes durante o sexo?',
+        options: ['Sim, adoro ser bem verbal', 'Algumas palavras excitantes', 'Prefiro mais gemidos', 'Sou mais quieto'],
         required: true
       }
     ];
@@ -159,6 +199,30 @@ const getQuestionsForPreference = (preference: SexualPreference): Question[] => 
         question: 'Como gosta de ser tratado?',
         options: ['Com carinho', 'Com intensidade', 'Com dominação', 'Varia o humor'],
         required: true
+      },
+      {
+        id: 'preparation_habits',
+        category: 'Físico - Passivo',
+        type: 'radio',
+        question: 'Como você se prepara para os encontros?',
+        options: ['Sempre muito bem preparado', 'Preparação básica', 'Depende da ocasião', 'Prefiro ser espontâneo'],
+        required: true
+      },
+      {
+        id: 'pain_tolerance',
+        category: 'Físico - Passivo',
+        type: 'radio',
+        question: 'Como é sua tolerância com desconforto inicial?',
+        options: ['Boa, me adapto rápido', 'Preciso ir com calma no início', 'Preciso de bastante carinho', 'Varia com o parceiro'],
+        required: true
+      },
+      {
+        id: 'verbal_expression',
+        category: 'Preferências Sexuais',
+        type: 'radio',
+        question: 'Você costuma expressar o que sente durante o sexo?',
+        options: ['Sou bem expressivo e vocal', 'Gemidos e algumas palavras', 'Mais contido mas gemo', 'Bem silencioso'],
+        required: true
       }
     ];
   }
@@ -188,6 +252,22 @@ const getQuestionsForPreference = (preference: SexualPreference): Question[] => 
         question: 'Quão experimental você é?',
         options: ['Muito experimental', 'Moderadamente', 'Prefiro o básico', 'Depende da confiança'],
         required: true
+      },
+      {
+        id: 'role_switching',
+        category: 'Versatilidade',
+        type: 'radio',
+        question: 'Com que frequência você troca de papel durante o sexo?',
+        options: ['Sempre gosto de trocar', 'Às vezes durante o encontro', 'Raramente no mesmo encontro', 'Cada encontro é uma coisa'],
+        required: true
+      },
+      {
+        id: 'energy_level',
+        category: 'Físico - Versátil',
+        type: 'radio',
+        question: 'Como é seu nível de energia para o sexo?',
+        options: ['Muito ativo e intenso', 'Equilibrado em ambos papéis', 'Mais relaxado e suave', 'Varia com o humor'],
+        required: true
       }
     ];
   }
@@ -208,6 +288,46 @@ const getQuestionsForPreference = (preference: SexualPreference): Question[] => 
       type: 'radio',
       question: 'Com que frequência você gosta de fazer sexo?',
       options: ['Diariamente', 'Algumas vezes por semana', 'Finais de semana', 'Quando rola química'],
+      required: true
+    },
+    {
+      id: 'fantasy_openness',
+      category: 'Intimidade',
+      type: 'radio',
+      question: 'Você compartilha suas fantasias com parceiros?',
+      options: ['Sempre, adoro falar sobre', 'Com confiança sim', 'Raramente', 'Prefiro guardar pra mim'],
+      required: true
+    },
+    {
+      id: 'kink_interest',
+      category: 'Intimidade',
+      type: 'radio',
+      question: 'Seu interesse em práticas diferentes:',
+      options: ['Muito aberto a experimentar', 'Curioso sobre algumas coisas', 'Prefiro o tradicional', 'Depende muito do parceiro'],
+      required: true
+    },
+    {
+      id: 'protection_habits',
+      category: 'Saúde Sexual',
+      type: 'radio',
+      question: 'Como você lida com proteção e saúde sexual?',
+      options: ['Sempre uso proteção', 'Uso com parceiros novos', 'Converso antes sobre exames', 'Prefiro parceiros fixos'],
+      required: true
+    },
+    {
+      id: 'emotional_connection',
+      category: 'Relacionamento',
+      type: 'radio',
+      question: 'Quanta conexão emocional você precisa para o sexo?',
+      options: ['Preciso de sentimento forte', 'Alguma conexão é importante', 'Atração física basta', 'Depende da situação'],
+      required: true
+    },
+    {
+      id: 'sexual_confidence',
+      category: 'Autoestima',
+      type: 'radio',
+      question: 'Como você se sente em relação à sua performance sexual?',
+      options: ['Muito confiante', 'Geralmente confiante', 'Às vezes inseguro', 'Ainda desenvolvendo confiança'],
       required: true
     }
   ];
