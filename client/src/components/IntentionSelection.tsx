@@ -3,43 +3,91 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, Heart, Flame, RotateCcw, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, Flame, RotateCcw, Users, UserX, RefreshCw } from "lucide-react";
+
+// New cascading intention system
+export type PrimaryIntention = 'RELACIONAMENTO' | 'SEXO';
+
+export type RelationshipSubIntention = 
+  | 'JA_FIQUEI'
+  | 'NUNCA_FIQUEI'
+  | 'E_MEU_EX'
+  | 'SO_FICAMOS_NAO_NAMORAMOS';
+
+export type SexSubIntention = 
+  | 'JA_FIQUEI_QUERO_NOVAMENTE'
+  | 'NAO_FIQUEI_QUERO_FICAR';
 
 export type UserIntention = 
-  | 'QUERO_RELACIONAMENTO' 
-  | 'QUERO_SEXO' 
-  | 'JA_FIQUEI_QUERO_NOVAMENTE' 
-  | 'NAO_FIQUEI_QUERO_FICAR';
+  | `RELACIONAMENTO_${RelationshipSubIntention}`
+  | `SEXO_${SexSubIntention}`;
 
 interface IntentionSelectionProps {
   onBack: () => void;
   onNext: (intention: UserIntention) => void;
 }
 
-const intentions = [
+// Configuration for primary intentions
+const primaryIntentions = [
   {
-    value: 'QUERO_RELACIONAMENTO' as UserIntention,
+    value: 'RELACIONAMENTO' as PrimaryIntention,
     label: 'QUERO RELACIONAMENTO',
     description: 'Busco algo sério, duradouro e com sentimento',
     icon: Heart,
     color: 'text-red-500'
   },
   {
-    value: 'QUERO_SEXO' as UserIntention,
+    value: 'SEXO' as PrimaryIntention,
     label: 'QUERO SEXO',
     description: 'Procuro diversão, prazer e encontros casuais',
     icon: Flame,
     color: 'text-orange-500'
+  }
+];
+
+// Configuration for relationship sub-intentions
+const relationshipSubOptions = [
+  {
+    value: 'JA_FIQUEI' as RelationshipSubIntention,
+    label: 'JÁ FIQUEI',
+    description: 'Já tivemos algo e quero retomar',
+    icon: RotateCcw,
+    color: 'text-blue-500'
   },
   {
-    value: 'JA_FIQUEI_QUERO_NOVAMENTE' as UserIntention,
-    label: 'JÁ FIQUEI E QUERO DE NOVO',
+    value: 'NUNCA_FIQUEI' as RelationshipSubIntention,
+    label: 'NUNCA FIQUEI',
+    description: 'Nunca rolou nada entre nós',
+    icon: Users,
+    color: 'text-green-500'
+  },
+  {
+    value: 'E_MEU_EX' as RelationshipSubIntention,
+    label: 'É MEU EX',
+    description: 'Já namoramos e terminamos',
+    icon: UserX,
+    color: 'text-purple-500'
+  },
+  {
+    value: 'SO_FICAMOS_NAO_NAMORAMOS' as RelationshipSubIntention,
+    label: 'SÓ FICAMOS E NÃO NAMORAMOS',
+    description: 'Tivemos algo casual, mas nunca namoramos',
+    icon: RefreshCw,
+    color: 'text-indigo-500'
+  }
+];
+
+// Configuration for sex sub-intentions
+const sexSubOptions = [
+  {
+    value: 'JA_FIQUEI_QUERO_NOVAMENTE' as SexSubIntention,
+    label: 'JÁ FIQUEI, QUERO FICAR DE NOVO',
     description: 'Já rolou algo e quero repetir a experiência',
     icon: RotateCcw,
     color: 'text-blue-500'
   },
   {
-    value: 'NAO_FIQUEI_QUERO_FICAR' as UserIntention,
+    value: 'NAO_FIQUEI_QUERO_FICAR' as SexSubIntention,
     label: 'NÃO FIQUEI E QUERO FICAR',
     description: 'Ainda não rolou, mas tenho interesse em ficar',
     icon: Users,
@@ -48,12 +96,62 @@ const intentions = [
 ];
 
 export default function IntentionSelection({ onBack, onNext }: IntentionSelectionProps) {
-  const [selectedIntention, setSelectedIntention] = useState<UserIntention | ''>('');
+  const [step, setStep] = useState<1 | 2>(1);
+  const [primarySelection, setPrimarySelection] = useState<PrimaryIntention | ''>('');
+  const [subSelection, setSubSelection] = useState<RelationshipSubIntention | SexSubIntention | ''>('');
+
+  const handlePrimarySelection = (primary: PrimaryIntention) => {
+    setPrimarySelection(primary);
+    setSubSelection(''); // Reset sub-selection when changing primary
+    setStep(2);
+  };
+
+  const handleSubSelection = (sub: RelationshipSubIntention | SexSubIntention) => {
+    setSubSelection(sub);
+  };
+
+  const handleBack = () => {
+    if (step === 2) {
+      setStep(1);
+      setSubSelection('');
+    } else {
+      onBack();
+    }
+  };
 
   const handleNext = () => {
-    if (selectedIntention) {
-      onNext(selectedIntention);
+    if (step === 1 && primarySelection) {
+      setStep(2);
+    } else if (step === 2 && primarySelection && subSelection) {
+      const finalIntention = `${primarySelection}_${subSelection}` as UserIntention;
+      onNext(finalIntention);
     }
+  };
+
+  const currentOptions = step === 1 
+    ? primaryIntentions 
+    : primarySelection === 'RELACIONAMENTO' 
+      ? relationshipSubOptions 
+      : sexSubOptions;
+
+  const currentSelection = step === 1 ? primarySelection : subSelection;
+
+  const getTitle = () => {
+    if (step === 1) {
+      return "Qual é sua intenção?";
+    }
+    return primarySelection === 'RELACIONAMENTO' 
+      ? "Como é sua situação com essa pessoa?"
+      : "Qual é sua situação com essa pessoa?";
+  };
+
+  const getSubtitle = () => {
+    if (step === 1) {
+      return "Escolha o que melhor representa o que você busca";
+    }
+    return primarySelection === 'RELACIONAMENTO'
+      ? "Defina o histórico do relacionamento"
+      : "Defina seu histórico de envolvimento";
   };
 
   return (
@@ -61,49 +159,72 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
       <div className="container mx-auto max-w-2xl pt-8">
         <Card className="p-8" data-testid="card-intention-selection">
           <div className="mb-6">
-            <Button variant="ghost" onClick={onBack} className="p-0" data-testid="button-back">
+            <Button variant="ghost" onClick={handleBack} className="p-0" data-testid="button-back">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
+              {step === 2 ? 'Voltar' : 'Voltar'}
             </Button>
           </div>
 
           <div className="mb-8">
+            {/* Progress indicator */}
+            <div className="flex items-center justify-center mb-6">
+              <div className="flex items-center space-x-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step >= 1 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                }`}>
+                  1
+                </div>
+                <div className={`w-12 h-0.5 ${step >= 2 ? 'bg-primary' : 'bg-muted'}`}></div>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step >= 2 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                }`}>
+                  2
+                </div>
+              </div>
+            </div>
+
             <h2 className="text-2xl font-bold text-center mb-4" data-testid="title-intention">
-              Qual é sua intenção?
+              {getTitle()}
             </h2>
             <p className="text-muted-foreground text-center" data-testid="subtitle-intention">
-              Escolha o que melhor representa o que você busca
+              {getSubtitle()}
             </p>
           </div>
 
           <div className="space-y-4 mb-8">
             <RadioGroup
-              value={selectedIntention}
-              onValueChange={(value) => setSelectedIntention(value as UserIntention)}
-              data-testid="radio-group-intentions"
+              value={currentSelection}
+              onValueChange={(value) => {
+                if (step === 1) {
+                  handlePrimarySelection(value as PrimaryIntention);
+                } else {
+                  handleSubSelection(value as RelationshipSubIntention | SexSubIntention);
+                }
+              }}
+              data-testid={`radio-group-intentions-step-${step}`}
             >
-              {intentions.map((intention) => {
-                const IconComponent = intention.icon;
+              {currentOptions.map((option) => {
+                const IconComponent = option.icon;
                 return (
-                  <div key={intention.value}>
+                  <div key={option.value}>
                     <Label
-                      htmlFor={intention.value}
+                      htmlFor={option.value}
                       className="flex items-center space-x-4 p-4 border-2 rounded-lg cursor-pointer hover-elevate transition-all duration-200 hover:border-primary"
-                      data-testid={`label-intention-${intention.value}`}
+                      data-testid={`label-intention-${option.value}`}
                     >
                       <RadioGroupItem
-                        value={intention.value}
-                        id={intention.value}
-                        data-testid={`radio-intention-${intention.value}`}
+                        value={option.value}
+                        id={option.value}
+                        data-testid={`radio-intention-${option.value}`}
                       />
                       <div className="flex items-center space-x-3 flex-1">
-                        <IconComponent className={`h-6 w-6 ${intention.color}`} />
+                        <IconComponent className={`h-6 w-6 ${option.color}`} />
                         <div className="flex-1">
                           <div className="font-semibold text-foreground">
-                            {intention.label}
+                            {option.label}
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            {intention.description}
+                            {option.description}
                           </div>
                         </div>
                       </div>
@@ -114,13 +235,24 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
             </RadioGroup>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+            {step === 2 && (
+              <Button
+                variant="outline"
+                onClick={() => setStep(1)}
+                data-testid="button-previous-step"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Anterior
+              </Button>
+            )}
+            <div className="flex-1" />
             <Button
               onClick={handleNext}
-              disabled={!selectedIntention}
+              disabled={!currentSelection}
               data-testid="button-next-intention"
             >
-              Próximo
+              {step === 1 ? 'Próximo' : 'Continuar'}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>

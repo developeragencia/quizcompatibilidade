@@ -1,9 +1,19 @@
-// Tipos de intenção do usuário
-export type UserIntention = 
-  | 'QUERO_RELACIONAMENTO' 
-  | 'QUERO_SEXO' 
-  | 'JA_FIQUEI_QUERO_NOVAMENTE' 
+// New cascading intention system
+export type PrimaryIntention = 'RELACIONAMENTO' | 'SEXO';
+
+export type RelationshipSubIntention = 
+  | 'JA_FIQUEI'
+  | 'NUNCA_FIQUEI'
+  | 'E_MEU_EX'
+  | 'SO_FICAMOS_NAO_NAMORAMOS';
+
+export type SexSubIntention = 
+  | 'JA_FIQUEI_QUERO_NOVAMENTE'
   | 'NAO_FIQUEI_QUERO_FICAR';
+
+export type UserIntention = 
+  | `RELACIONAMENTO_${RelationshipSubIntention}`
+  | `SEXO_${SexSubIntention}`;
 
 // Papéis sexuais
 export type SexualRole = 
@@ -92,7 +102,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Amizade colorida com carinho e consistência'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     followUps: {
       'Relacionamento sério com possibilidade de morar junto': ['relacionamento_tempo_morar', 'relacionamento_filhos'],
@@ -114,7 +124,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Não tenho pressa, quando sentir que é o momento'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.8
   },
@@ -132,7 +142,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Não quero ter filhos'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.9
   },
@@ -150,7 +160,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Humor e química natural'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.85
   },
@@ -169,7 +179,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Evito conflitos, prefiro manter a paz'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     followUps: {
       'Converso na hora para resolver logo': ['comunicacao_intensidade'],
@@ -191,7 +201,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Preciso que o parceiro perceba que algo está errado'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.8
   },
@@ -210,7 +220,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Não sou muito possessivo'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     followUps: {
       'Essencial desde o início - só fico com uma pessoa': ['ciumes_nivel']
@@ -231,7 +241,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       '1-2 vezes por semana, valorizamos nosso espaço'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.75
   },
@@ -250,7 +260,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Varia conforme o humor e cansaço'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.8
   },
@@ -273,7 +283,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Gosto de ser mais espontâneo'
     ],
     required: true,
-    intentions: ['QUERO_SEXO'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     followUps: {
       'Preparação completa - banho, higiene íntima, perfume': ['higiene_expectativa_parceiro']
@@ -294,7 +304,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'A química supera tudo'
     ],
     required: true,
-    intentions: ['QUERO_SEXO'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.8
   },
@@ -313,7 +323,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Depende da química no momento'
     ],
     required: true,
-    intentions: ['QUERO_SEXO'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.85
   },
@@ -332,7 +342,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Bem conservador, nada muito ousado'
     ],
     required: true,
-    intentions: ['QUERO_SEXO'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     followUps: {
       'Muito aberto, gosto de experimentar coisas novas': ['kinks_interesse_casual']
@@ -353,7 +363,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Role-play e fantasias'
     ],
     required: true,
-    intentions: ['QUERO_SEXO'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.6
   },
@@ -372,7 +382,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Confio mais na pessoa que na proteção'
     ],
     required: true,
-    intentions: ['QUERO_SEXO'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.95
   },
@@ -394,7 +404,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Mais carinho e conexão emocional'
     ],
     required: true,
-    intentions: ['JA_FIQUEI_QUERO_NOVAMENTE'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.85
   },
@@ -412,7 +422,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Sem compromisso, quando pintar clima'
     ],
     required: true,
-    intentions: ['JA_FIQUEI_QUERO_NOVAMENTE'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.8
   },
@@ -434,7 +444,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Mistério e vontade de conhecer melhor'
     ],
     required: true,
-    intentions: ['NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.8
   },
@@ -452,7 +462,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Ver se rola compatibilidade sexual'
     ],
     required: true,
-    intentions: ['NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.85
   },
@@ -470,7 +480,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
     question: 'Qual o tamanho do seu pênis? (cm)',
     placeholder: 'Ex: 18',
     required: true,
-    intentions: ['QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO'],
     weight: 0.7
   },
@@ -488,7 +498,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Ainda estou melhorando'
     ],
     required: true,
-    intentions: ['QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO'],
     weight: 0.8
   },
@@ -506,7 +516,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Mais suave e carinhoso'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO', 'QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS', 'SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO'],
     weight: 0.85
   },
@@ -525,7 +535,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Atlética e definida'
     ],
     required: true,
-    intentions: ['QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['PASS', 'VERSATIL_PASS'],
     weight: 0.6
   },
@@ -543,7 +553,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Depende muito do tamanho do parceiro'
     ],
     required: true,
-    intentions: ['QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['PASS', 'VERSATIL_PASS'],
     followUps: {
       'Preciso de muito carinho e paciência': ['passivo_cuidado_preferido'],
@@ -565,7 +575,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Gosto de ser dominado e controlado'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO', 'QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS', 'SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['PASS', 'VERSATIL_PASS'],
     weight: 0.85
   },
@@ -583,7 +593,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Até 15cm é mais confortável'
     ],
     required: true,
-    intentions: ['QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['PASS', 'VERSATIL_PASS'],
     weight: 0.75
   },
@@ -602,7 +612,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Depende do parceiro e da química'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO', 'QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS', 'SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['VERSATIL_ATIVO', 'VERSATIL_PASS'],
     weight: 0.8
   },
@@ -620,7 +630,7 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
       'Gosto de alternar durante o encontro'
     ],
     required: true,
-    intentions: ['QUERO_RELACIONAMENTO', 'QUERO_SEXO', 'JA_FIQUEI_QUERO_NOVAMENTE', 'NAO_FIQUEI_QUERO_FICAR'],
+    intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS', 'SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['VERSATIL_ATIVO', 'VERSATIL_PASS'],
     weight: 0.75
   }
