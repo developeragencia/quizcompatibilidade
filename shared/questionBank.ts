@@ -52,7 +52,19 @@ export enum SexualTrait {
   TECNICA_ATIVO = 'tecnica_ativo',
   FISICO_PASSIVO = 'fisico_passivo',
   ADAPTACAO_PASSIVO = 'adaptacao_passivo',
-  VERSATILIDADE = 'versatilidade'
+  VERSATILIDADE = 'versatilidade',
+  
+  // Para contextos específicos
+  TRANSICAO_HOOKUP_RELACIONAMENTO = 'transicao_hookup_relacionamento',
+  HISTORIA_EX = 'historia_ex',
+  SUPERACAO_PASSADO = 'superacao_passado',
+  PRIMEIROS_PASSOS = 'primeiros_passos',
+  CONSTRUCAO_CONFIANCA = 'construcao_confianca',
+  RESOLUCAO_PROBLEMAS_ANTERIORES = 'resolucao_problemas_anteriores',
+  CASUAL_PARA_SERIO = 'casual_para_serio',
+  EXPECTATIVAS_SEXUAIS_REPETIDAS = 'expectativas_sexuais_repetidas',
+  ANSIEDADE_PRIMEIRA_VEZ = 'ansiedade_primeira_vez',
+  COMPATIBILIDADE_INICIAL = 'compatibilidade_inicial'
 }
 
 export interface QuestionRule {
@@ -633,6 +645,771 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
     intentions: ['RELACIONAMENTO_JA_FIQUEI', 'RELACIONAMENTO_NUNCA_FIQUEI', 'RELACIONAMENTO_E_MEU_EX', 'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS', 'SEXO_JA_FIQUEI_QUERO_NOVAMENTE', 'SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['VERSATIL_ATIVO', 'VERSATIL_PASS'],
     weight: 0.75
+  },
+
+  // ===========================================
+  // PERGUNTAS ESPECÍFICAS POR CONTEXTO
+  // ===========================================
+  
+  // =======================================
+  // RELACIONAMENTO_JA_FIQUEI (Transição de hookup para relacionamento)
+  // =======================================
+  
+  {
+    id: 'ja_fiquei_transicao_motivo',
+    trait: SexualTrait.TRANSICAO_HOOKUP_RELACIONAMENTO,
+    category: 'Transição para Relacionamento',
+    type: 'radio',
+    question: 'Por que você quer transformar isso em relacionamento?',
+    options: [
+      'A química sexual foi incrível e quero mais',
+      'Ele tem tudo que procuro num parceiro',
+      'Sinto que pode rolar algo sério entre nós',
+      'Cansei de ficar com várias pessoas, quero algo estável'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_JA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'A química sexual foi incrível e quero mais': ['ja_fiquei_sexo_qualidade'],
+      'Sinto que pode rolar algo sério entre nós': ['ja_fiquei_sinais_reciprocidade']
+    },
+    weight: 0.9
+  },
+
+  {
+    id: 'ja_fiquei_sexo_qualidade',
+    trait: SexualTrait.TRANSICAO_HOOKUP_RELACIONAMENTO,
+    category: 'Transição para Relacionamento',
+    type: 'radio',
+    question: 'Como foi a experiência sexual com ele?',
+    options: [
+      'Perfeita, tivemos uma conexão incrível',
+      'Muito boa, mas podemos melhorar com tempo',
+      'Boa no geral, gostei do jeito dele',
+      'Satisfatória, mas o que mais me atrai é a pessoa'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_JA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'ja_fiquei_sinais_reciprocidade',
+    trait: SexualTrait.TRANSICAO_HOOKUP_RELACIONAMENTO,
+    category: 'Transição para Relacionamento',
+    type: 'radio',
+    question: 'Que sinais ele dá de que também quer algo sério?',
+    options: [
+      'Conversa comigo todos os dias, demonstra interesse',
+      'Me trata com carinho, não como hookup casual',
+      'Fala sobre planos futuros incluindo eu',
+      'Ainda não tenho certeza, preciso descobrir'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_JA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Ainda não tenho certeza, preciso descobrir': ['ja_fiquei_como_abordar']
+    },
+    weight: 0.9
+  },
+
+  {
+    id: 'ja_fiquei_como_abordar',
+    trait: SexualTrait.TRANSICAO_HOOKUP_RELACIONAMENTO,
+    category: 'Transição para Relacionamento',
+    type: 'radio',
+    question: 'Como você pretende abordar o assunto?',
+    options: [
+      'Vou falar diretamente que quero namorar',
+      'Vou sugerir exclusividade primeiro',
+      'Vou deixar rolar naturalmente e ver os sinais',
+      'Vou perguntar o que ele pensa sobre relacionamentos'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_JA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'ja_fiquei_expectativas_mudanca',
+    trait: SexualTrait.TRANSICAO_HOOKUP_RELACIONAMENTO,
+    category: 'Transição para Relacionamento',
+    type: 'radio',
+    question: 'O que você espera que mude se virarem namorados?',
+    options: [
+      'Mais intimidade emocional e carinho',
+      'Exclusividade e compromisso',
+      'Mais tempo juntos e planos em comum',
+      'Que não mude muito, já está bom assim'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_JA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'ja_fiquei_medo_rejeicao',
+    trait: SexualTrait.TRANSICAO_HOOKUP_RELACIONAMENTO,
+    category: 'Transição para Relacionamento',
+    type: 'radio',
+    question: 'Qual seu maior medo nessa transição?',
+    options: [
+      'Que ele só me veja como hookup casual',
+      'Que estrague o que já temos de bom',
+      'Que ele não esteja pronto para compromisso',
+      'Que descobrimos que não somos compatíveis'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_JA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  // =======================================
+  // RELACIONAMENTO_NUNCA_FIQUEI (Construindo relacionamento do zero)
+  // =======================================
+
+  {
+    id: 'nunca_fiquei_primeira_atracao',
+    trait: SexualTrait.PRIMEIROS_PASSOS,
+    category: 'Primeiros Passos',
+    type: 'radio',
+    question: 'O que mais te atrai nesta pessoa?',
+    options: [
+      'A personalidade e jeito de ser',
+      'A aparência física e presença',
+      'A inteligência e forma de pensar',
+      'A energia e química que sinto'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_NUNCA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'nunca_fiquei_conhecimento_mutuo',
+    trait: SexualTrait.CONSTRUCAO_CONFIANCA,
+    category: 'Construindo Confiança',
+    type: 'radio',
+    question: 'Como vocês se conheceram?',
+    options: [
+      'Apps de relacionamento',
+      'Através de amigos em comum',
+      'Em ambientes sociais (festas, eventos)',
+      'Trabalho, estudos ou atividades em comum'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_NUNCA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.7
+  },
+
+  {
+    id: 'nunca_fiquei_ritmo_ideal',
+    trait: SexualTrait.PRIMEIROS_PASSOS,
+    category: 'Primeiros Passos',
+    type: 'radio',
+    question: 'Qual ritmo você prefere para conhecê-lo melhor?',
+    options: [
+      'Devagar, construindo confiança antes da intimidade',
+      'Natural, deixando as coisas fluírem',
+      'Um pouco mais rápido, gosto de intensidade',
+      'Muito devagar, preciso ter certeza primeiro'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_NUNCA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Devagar, construindo confiança antes da intimidade': ['nunca_fiquei_construir_confianca'],
+      'Muito devagar, preciso ter certeza primeiro': ['nunca_fiquei_inseguracas']
+    },
+    weight: 0.9
+  },
+
+  {
+    id: 'nunca_fiquei_construir_confianca',
+    trait: SexualTrait.CONSTRUCAO_CONFIANCA,
+    category: 'Construindo Confiança',
+    type: 'radio',
+    question: 'Como você gosta de construir confiança?',
+    options: [
+      'Conversas profundas sobre sonhos e valores',
+      'Experiências juntos, conhecer no dia a dia',
+      'Demonstrações de carinho e atenção',
+      'Tempo de qualidade e intimidade emocional'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_NUNCA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'nunca_fiquei_inseguracas',
+    trait: SexualTrait.CONSTRUCAO_CONFIANCA,
+    category: 'Construindo Confiança',
+    type: 'radio',
+    question: 'Quais são suas principais inseguranças?',
+    options: [
+      'Medo de não ser o suficiente pra ele',
+      'Ansiedade sobre performance sexual',
+      'Receio de me abrir emocionalmente',
+      'Medo de repetir erros de relacionamentos passados'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_NUNCA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'nunca_fiquei_expectativas_primeiro_beijo',
+    trait: SexualTrait.PRIMEIROS_PASSOS,
+    category: 'Primeiros Passos',
+    type: 'radio',
+    question: 'Como você imagina o primeiro momento íntimo?',
+    options: [
+      'Romântico e especial, com calma',
+      'Natural e espontâneo quando rolar clima',
+      'Com paixão e intensidade',
+      'Sem pressa, quando ambos estivermos prontos'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_NUNCA_FIQUEI'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  // =======================================
+  // RELACIONAMENTO_E_MEU_EX (Reatando com ex-parceiro)
+  // =======================================
+
+  {
+    id: 'ex_motivo_termino',
+    trait: SexualTrait.HISTORIA_EX,
+    category: 'História do Relacionamento',
+    type: 'radio',
+    question: 'Qual foi o principal motivo do término?',
+    options: [
+      'Problemas de comunicação e brigas',
+      'Diferenças de objetivos de vida',
+      'Infidelidade ou questões de confiança',
+      'Circunstâncias externas (distância, trabalho, família)'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Problemas de comunicação e brigas': ['ex_melhorou_comunicacao'],
+      'Infidelidade ou questões de confiança': ['ex_confianca_perdoao'],
+      'Circunstâncias externas (distância, trabalho, família)': ['ex_situacao_mudou']
+    },
+    weight: 0.95
+  },
+
+  {
+    id: 'ex_melhorou_comunicacao',
+    trait: SexualTrait.RESOLUCAO_PROBLEMAS_ANTERIORES,
+    category: 'Resolvendo Problemas',
+    type: 'radio',
+    question: 'Como você melhorou sua comunicação?',
+    options: [
+      'Aprendi a expressar meus sentimentos sem atacar',
+      'Pratico mais a escuta e empatia',
+      'Busquei terapia ou ajuda profissional',
+      'Amadureci e tenho mais paciência agora'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
+  },
+
+  {
+    id: 'ex_confianca_perdoao',
+    trait: SexualTrait.SUPERACAO_PASSADO,
+    category: 'Superação',
+    type: 'radio',
+    question: 'Como você lida com as questões de confiança?',
+    options: [
+      'Perdoei completamente e quero recomeçar',
+      'Ainda tenho algumas inseguranças, mas quero tentar',
+      'Ele demonstrou mudanças genuínas',
+      'Decidimos ser transparentes sobre tudo'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.95
+  },
+
+  {
+    id: 'ex_situacao_mudou',
+    trait: SexualTrait.RESOLUCAO_PROBLEMAS_ANTERIORES,
+    category: 'Resolvendo Problemas',
+    type: 'radio',
+    question: 'Como a situação mudou agora?',
+    options: [
+      'Não temos mais distância geográfica',
+      'Nossa situação profissional está mais estável',
+      'Questões familiares foram resolvidas',
+      'Ambos amadurecemos e temos mais clareza'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'ex_tempo_separados',
+    trait: SexualTrait.HISTORIA_EX,
+    category: 'História do Relacionamento',
+    type: 'radio',
+    question: 'Quanto tempo ficaram separados?',
+    options: [
+      'Algumas semanas a poucos meses',
+      '3 a 6 meses',
+      '6 meses a 1 ano',
+      'Mais de 1 ano'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Mais de 1 ano': ['ex_mudancas_pessoais'],
+      '6 meses a 1 ano': ['ex_saudade_vs_razao']
+    },
+    weight: 0.8
+  },
+
+  {
+    id: 'ex_mudancas_pessoais',
+    trait: SexualTrait.SUPERACAO_PASSADO,
+    category: 'Superação',
+    type: 'radio',
+    question: 'Como vocês mudaram durante esse tempo?',
+    options: [
+      'Amadurecemos muito, somos pessoas melhores',
+      'Tivemos outras experiências e sabemos o que queremos',
+      'Resolvemos questões pessoais que afetavam o relacionamento',
+      'Percebemos que éramos feitos um para o outro'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
+  },
+
+  {
+    id: 'ex_intimidade_diferente',
+    trait: SexualTrait.SUPERACAO_PASSADO,
+    category: 'Superação',
+    type: 'radio',
+    question: 'Como você vê a intimidade física agora?',
+    options: [
+      'Vai ser ainda melhor, conhecemos bem um ao outro',
+      'Sinto um pouco de estranheza, mas vai passar',
+      'É como se nunca tivéssemos parado',
+      'Quero redescobrir ele de forma nova'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_E_MEU_EX'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  // =======================================
+  // RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS (Transição de casual para sério)
+  // =======================================
+
+  {
+    id: 'casual_para_serio_duracao',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'Há quanto tempo vocês ficam casualmente?',
+    options: [
+      'Algumas semanas',
+      '1 a 3 meses',
+      '3 a 6 meses',
+      'Mais de 6 meses'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Mais de 6 meses': ['casual_para_serio_porque_agora']
+    },
+    weight: 0.85
+  },
+
+  {
+    id: 'casual_para_serio_porque_agora',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'Por que quer transformar em relacionamento agora?',
+    options: [
+      'Percebemos que temos mais em comum do que pensávamos',
+      'Cansei da situação casual, quero estabilidade',
+      'Sinto que ele também quer algo mais sério',
+      'Estou desenvolvendo sentimentos mais profundos'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
+  },
+
+  {
+    id: 'casual_para_serio_regras_atuais',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'Como funciona o esquema casual de vocês?',
+    options: [
+      'Ficamos só nós dois, mas sem compromisso',
+      'Cada um fica com outras pessoas também',
+      'Não falamos sobre exclusividade',
+      'É mais como amigos que fazem sexo'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Cada um fica com outras pessoas também': ['casual_para_serio_exclusividade_mudanca'],
+      'É mais como amigos que fazem sexo': ['casual_para_serio_sentimentos']
+    },
+    weight: 0.85
+  },
+
+  {
+    id: 'casual_para_serio_exclusividade_mudanca',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'Como você se sente sobre exclusividade?',
+    options: [
+      'Já parei de ficar com outros faz tempo',
+      'Estou disposto a parar se virarmos namorados',
+      'Ainda gosto da liberdade, mas posso mudar',
+      'Preciso ter certeza que vale a pena primeiro'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
+  },
+
+  {
+    id: 'casual_para_serio_sentimentos',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'Como seus sentimentos mudaram?',
+    options: [
+      'Comecei a sentir mais carinho e apego',
+      'Penso nele mais do que deveria para algo casual',
+      'Sinto ciúmes quando ele fica com outros',
+      'Percebo que nossa conexão vai além do sexo'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'casual_para_serio_medo_perder',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'Qual seu maior medo nessa transição?',
+    options: [
+      'Que ele prefira manter tudo como está',
+      'Que estrague nossa amizade e química',
+      'Que descubra que não somos compatíveis romanticamente',
+      'Que o relacionamento seja menos divertido que o casual'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'casual_para_serio_diferencial',
+    trait: SexualTrait.CASUAL_PARA_SERIO,
+    category: 'Casual para Sério',
+    type: 'radio',
+    question: 'O que faz essa pessoa especial comparada aos outros casuais?',
+    options: [
+      'A conexão emocional é única',
+      'O sexo é muito melhor com ele',
+      'Nos damos bem fora da cama também',
+      'Sinto que posso ser eu mesmo com ele'
+    ],
+    required: true,
+    intentions: ['RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  // =======================================
+  // SEXO_JA_FIQUEI_QUERO_NOVAMENTE (Expansão - mais variedade)
+  // =======================================
+
+  {
+    id: 'ja_fiquei_sexo_frequencia_desejada',
+    trait: SexualTrait.EXPECTATIVAS_SEXUAIS_REPETIDAS,
+    category: 'Repetindo a Experiência',
+    type: 'radio',
+    question: 'Com que frequência gostaria de se encontrar com ele?',
+    options: [
+      'Sempre que possível, virou vício',
+      'Algumas vezes por semana',
+      'Fins de semana quando der vontade',
+      'Sem compromisso, quando rolar clima'
+    ],
+    required: true,
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'ja_fiquei_sexo_pontos_altos',
+    trait: SexualTrait.MELHORIA_EXPERIENCIA,
+    category: 'Melhorando a Experiência',
+    type: 'radio',
+    question: 'O que mais gostou no encontro anterior?',
+    options: [
+      'A química e conexão que rolou',
+      'O jeito dele na cama, a técnica',
+      'A intensidade e paixão',
+      'Como me senti à vontade e confortável'
+    ],
+    required: true,
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'ja_fiquei_sexo_areas_melhorar',
+    trait: SexualTrait.MELHORIA_EXPERIENCIA,
+    category: 'Melhorando a Experiência',
+    type: 'radio',
+    question: 'O que poderia ser melhor no próximo encontro?',
+    options: [
+      'Mais foreplay e preliminares',
+      'Comunicação sobre preferências',
+      'Mais tempo sem pressa',
+      'Experimentar posições diferentes'
+    ],
+    required: true,
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Comunicação sobre preferências': ['ja_fiquei_sexo_feedback'],
+      'Experimentar posições diferentes': ['ja_fiquei_sexo_experimentacao']
+    },
+    weight: 0.9
+  },
+
+  {
+    id: 'ja_fiquei_sexo_feedback',
+    trait: SexualTrait.MELHORIA_EXPERIENCIA,
+    category: 'Melhorando a Experiência',
+    type: 'radio',
+    question: 'Como vocês lidam com feedback sexual?',
+    options: [
+      'Falamos abertamente sobre o que gostamos',
+      'Damos dicas no momento, de forma sutil',
+      'Ainda estamos aprendendo a nos comunicar',
+      'Preferimos descobrir na prática'
+    ],
+    required: true,
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'ja_fiquei_sexo_experimentacao',
+    trait: SexualTrait.MELHORIA_EXPERIENCIA,
+    category: 'Melhorando a Experiência',
+    type: 'radio',
+    question: 'Que tipo de experimentação vocês querem tentar?',
+    options: [
+      'Posições que não fizemos ainda',
+      'Lugares diferentes (não só cama)',
+      'Brinquedos ou acessórios',
+      'Role-play ou fantasias'
+    ],
+    required: true,
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.7
+  },
+
+  {
+    id: 'ja_fiquei_sexo_emocional_vs_fisico',
+    trait: SexualTrait.EXPECTATIVAS_SEXUAIS_REPETIDAS,
+    category: 'Repetindo a Experiência',
+    type: 'radio',
+    question: 'Como você vê essa repetição?',
+    options: [
+      'Puramente sexual, uma ótima transa',
+      'Sexo com química emocional especial',
+      'Amizade colorida gostosa',
+      'Pode rolar algo mais se continuar assim'
+    ],
+    required: true,
+    intentions: ['SEXO_JA_FIQUEI_QUERO_NOVAMENTE'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  // =======================================
+  // SEXO_NAO_FIQUEI_QUERO_FICAR (Expansão - específicas para primeira vez)
+  // =======================================
+
+  {
+    id: 'nao_fiquei_ansiedade_nivel',
+    trait: SexualTrait.ANSIEDADE_PRIMEIRA_VEZ,
+    category: 'Primeira Vez',
+    type: 'radio',
+    question: 'Quão ansioso você está para o primeiro encontro?',
+    options: [
+      'Bem ansioso, é alguém que me interessa muito',
+      'Um pouco nervoso, mas animado',
+      'Tranquilo, deixando rolar naturalmente',
+      'Confiante, gosto de novas experiências'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    followUps: {
+      'Bem ansioso, é alguém que me interessa muito': ['nao_fiquei_pressao_performance'],
+      'Um pouco nervoso, mas animado': ['nao_fiquei_expectativas_realisticas']
+    },
+    weight: 0.8
+  },
+
+  {
+    id: 'nao_fiquei_pressao_performance',
+    trait: SexualTrait.ANSIEDADE_PRIMEIRA_VEZ,
+    category: 'Primeira Vez',
+    type: 'radio',
+    question: 'O que mais te deixa ansioso?',
+    options: [
+      'Medo de não ter uma boa performance',
+      'Receio de não agradar fisicamente',
+      'Ansiedade sobre minha experiência/inexperiência',
+      'Medo de não rolar química'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'nao_fiquei_expectativas_realisticas',
+    trait: SexualTrait.COMPATIBILIDADE_INICIAL,
+    category: 'Compatibilidade',
+    type: 'radio',
+    question: 'Suas expectativas para o primeiro encontro:',
+    options: [
+      'Sexo incrível desde o primeiro momento',
+      'Boa química, mas pode melhorar com tempo',
+      'Conhecer como ele é na intimidade',
+      'Ver se somos compatíveis sexualmente'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'nao_fiquei_ambiente_ideal',
+    trait: SexualTrait.COMPATIBILIDADE_INICIAL,
+    category: 'Compatibilidade',
+    type: 'radio',
+    question: 'Como imagina o ambiente ideal para vocês?',
+    options: [
+      'Na casa de um de nós, ambiente privado',
+      'Motel, lugar neutro e sem pressa',
+      'Onde rolar, se a química estiver boa',
+      'Prefiro conhecer melhor antes de decidir'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.75
+  },
+
+  {
+    id: 'nao_fiquei_comunicacao_preferencias',
+    trait: SexualTrait.ANSIEDADE_PRIMEIRA_VEZ,
+    category: 'Primeira Vez',
+    type: 'radio',
+    question: 'Como vocês conversam sobre preferências?',
+    options: [
+      'Já conversamos sobre o que gostamos',
+      'Vamos descobrindo na hora',
+      'Ele parece experiente, confio no feeling dele',
+      'Ainda não falamos sobre isso'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'nao_fiquei_experiencia_comparacao',
+    trait: SexualTrait.COMPATIBILIDADE_INICIAL,
+    category: 'Compatibilidade',
+    type: 'radio',
+    question: 'Como você se sente em relação à experiência dele?',
+    options: [
+      'Parece bem experiente, isso me atrai',
+      'Temos níveis similares de experiência',
+      'Eu sou mais experiente que ele',
+      'Não sei muito sobre a experiência dele ainda'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.8
+  },
+
+  {
+    id: 'nao_fiquei_depois_primeiro_encontro',
+    trait: SexualTrait.COMPATIBILIDADE_INICIAL,
+    category: 'Compatibilidade',
+    type: 'radio',
+    question: 'O que você espera após o primeiro encontro?',
+    options: [
+      'Que vire algo regular se for bom',
+      'Avaliar se queremos repetir',
+      'Pode ser só uma experiência única',
+      'Quero ver se rola algo além do sexo'
+    ],
+    required: true,
+    intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
   }
 ];
 
