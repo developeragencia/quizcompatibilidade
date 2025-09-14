@@ -2341,11 +2341,16 @@ ${Object.entries(coverageByCombination).map(([key, count]) => `  * ${key}: ${cou
  */
 export function getQuestionsForIntentionAndRole(
   intention: UserIntention, 
-  role: SexualRole
+  role?: SexualRole
 ): AdaptiveQuestion[] {
-  return QUESTION_BANK.filter(question => 
-    question.intentions.includes(intention) && question.roles.includes(role)
-  );
+  return QUESTION_BANK.filter(question => {
+    // For friendship intentions, ignore role filtering
+    if (intention.startsWith('AMIZADE_')) {
+      return question.intentions.includes(intention);
+    }
+    // For other intentions, require both intention and role match
+    return question.intentions.includes(intention) && role && question.roles.includes(role);
+  });
 }
 
 /**

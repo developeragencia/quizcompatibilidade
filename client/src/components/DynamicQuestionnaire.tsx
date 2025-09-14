@@ -14,7 +14,7 @@ import { AlertCircle } from 'lucide-react';
 
 interface DynamicQuestionnaireProps {
   intention: UserIntention;
-  preference: SexualPreference;
+  preference?: SexualPreference;
   onBack: () => void;
   onComplete: (answers: QuestionnaireAnswers) => void;
 }
@@ -30,7 +30,9 @@ interface QuestionnaireState {
 }
 
 // Helper function to safely map SexualPreference to SexualRole
-function mapPreferenceToRole(preference: SexualPreference): SexualRole {
+function mapPreferenceToRole(preference?: SexualPreference): SexualRole | undefined {
+  if (!preference) return undefined;
+  
   // Both types are identical, but this ensures type safety
   const mapping: Record<SexualPreference, SexualRole> = {
     'ATIVO': 'ATIVO',

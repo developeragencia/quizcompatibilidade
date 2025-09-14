@@ -192,7 +192,11 @@ export default function CompatibilityTestApp() {
   
   const handleQuestionnaireComplete = async (answers: QuestionnaireAnswers) => {
     try {
-      if (!userData || !selectedPreference) return;
+      if (!userData) return;
+      
+      // For friendship intentions, preference is not required
+      const isFriendship = selectedIntention?.startsWith('AMIZADE_');
+      if (!isFriendship && !selectedPreference) return;
       
       const response = await fetch('/api/questionnaire', {
         method: 'POST',
@@ -201,7 +205,7 @@ export default function CompatibilityTestApp() {
         },
         body: JSON.stringify({
           userId: userData.id || userData.instagram, // fallback
-          preference: selectedPreference,
+          preference: selectedPreference || null, // null for friendship
           answers
         }),
       });
@@ -222,7 +226,12 @@ export default function CompatibilityTestApp() {
   
   const handleSelectIntention = (intention: UserIntention) => {
     setSelectedIntention(intention);
-    setCurrentState('preferences');
+    // For friendship intentions, skip preferences and go directly to questionnaire
+    if (intention.startsWith('AMIZADE_')) {
+      setCurrentState('questionnaire');
+    } else {
+      setCurrentState('preferences');
+    }
   };
   
   const handleRetakeTest = () => {
@@ -283,27 +292,34 @@ export default function CompatibilityTestApp() {
       );
       
     case 'questionnaire':
-      if (!selectedIntention || !selectedPreference) {
-        setCurrentState('preferences');
+      const isFriendship = selectedIntention?.startsWith('AMIZADE_');
+      
+      // For friendship, only intention is required; for others, both intention and preference are required
+      if (!selectedIntention || (!isFriendship && !selectedPreference)) {
+        setCurrentState(isFriendship ? 'intentions' : 'preferences');
         return null;
       }
+      
       return (
         <DynamicQuestionnaire 
           intention={selectedIntention}
-          preference={selectedPreference}
-          onBack={() => setCurrentState('preferences')}
+          preference={selectedPreference || undefined}
+          onBack={() => setCurrentState(isFriendship ? 'intentions' : 'preferences')}
           onComplete={handleQuestionnaireComplete}
         />
       );
       
     case 'results':
-      if (!userData || !selectedIntention || !selectedPreference || !questionnaireAnswers) {
+      const isFriendshipResult = selectedIntention?.startsWith('AMIZADE_');
+      
+      // For friendship, preference is optional; for others, it's required
+      if (!userData || !selectedIntention || (!isFriendshipResult && !selectedPreference) || !questionnaireAnswers) {
         setCurrentState('welcome');
         return null;
       }
       return (
         <ResultsPage 
-          preference={selectedPreference}
+          preference={selectedPreference || undefined}
           answers={questionnaireAnswers}
           userData={userData}
           onRetakeTest={handleRetakeTest}

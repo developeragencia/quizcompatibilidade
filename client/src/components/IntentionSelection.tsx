@@ -189,7 +189,7 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
 
   const getSubtitle = () => {
     if (step === 1) {
-      return "Escolha o que melhor representa o que você busca";
+      return "Escolha o que melhor representa o que você busca só pode escolher 1 vez, não é possível refazer o teste com outra opção";
     }
     return primarySelection === 'RELACIONAMENTO'
       ? "Defina o histórico do relacionamento"
