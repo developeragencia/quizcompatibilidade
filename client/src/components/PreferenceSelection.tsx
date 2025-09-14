@@ -65,7 +65,7 @@ export default function PreferenceSelection({ onBack, onSelectPreference }: Pref
           <div className="text-center mb-8">
             <User className="mx-auto h-16 w-16 text-primary mb-4" data-testid="icon-user" />
             <h2 className="text-3xl font-bold text-primary mb-4" data-testid="text-title">
-              Qual é seu papel sexual?
+              O que vc seria com Alex?
             </h2>
             <p className="text-muted-foreground text-lg" data-testid="text-subtitle">
               Defina sua posição preferida na relação sexual para personalizar as perguntas

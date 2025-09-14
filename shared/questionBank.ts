@@ -1,5 +1,5 @@
 // New cascading intention system
-export type PrimaryIntention = 'RELACIONAMENTO' | 'SEXO';
+export type PrimaryIntention = 'RELACIONAMENTO' | 'SEXO' | 'AMIZADE';
 
 export type RelationshipSubIntention = 
   | 'JA_FIQUEI'
@@ -11,9 +11,15 @@ export type SexSubIntention =
   | 'JA_FIQUEI_QUERO_NOVAMENTE'
   | 'NAO_FIQUEI_QUERO_FICAR';
 
+export type FriendshipSubIntention = 
+  | 'AMIZADE_NOVA'
+  | 'AMIZADE_JA_CONHECO'
+  | 'AMIZADE_INTERESSE_DESENVOLVER';
+
 export type UserIntention = 
   | `RELACIONAMENTO_${RelationshipSubIntention}`
-  | `SEXO_${SexSubIntention}`;
+  | `SEXO_${SexSubIntention}`
+  | `AMIZADE_${FriendshipSubIntention}`;
 
 // Papéis sexuais
 export type SexualRole = 
@@ -29,7 +35,10 @@ export const ALL_INTENTIONS: UserIntention[] = [
   'RELACIONAMENTO_E_MEU_EX',
   'RELACIONAMENTO_SO_FICAMOS_NAO_NAMORAMOS',
   'SEXO_JA_FIQUEI_QUERO_NOVAMENTE',
-  'SEXO_NAO_FIQUEI_QUERO_FICAR'
+  'SEXO_NAO_FIQUEI_QUERO_FICAR',
+  'AMIZADE_AMIZADE_NOVA',
+  'AMIZADE_AMIZADE_JA_CONHECO',
+  'AMIZADE_AMIZADE_INTERESSE_DESENVOLVER'
 ];
 
 export const ALL_ROLES: SexualRole[] = [
@@ -81,7 +90,15 @@ export enum SexualTrait {
   CASUAL_PARA_SERIO = 'casual_para_serio',
   EXPECTATIVAS_SEXUAIS_REPETIDAS = 'expectativas_sexuais_repetidas',
   ANSIEDADE_PRIMEIRA_VEZ = 'ansiedade_primeira_vez',
-  COMPATIBILIDADE_INICIAL = 'compatibilidade_inicial'
+  COMPATIBILIDADE_INICIAL = 'compatibilidade_inicial',
+  
+  // Para amizade
+  INTERESSES_COMUNS = 'interesses_comuns',
+  SUPORTE_EMOCIONAL = 'suporte_emocional',
+  TEMPO_JUNTOS = 'tempo_juntos',
+  EVOLUCAO_AMIZADE = 'evolucao_amizade',
+  CONFIANCA_AMIZADE = 'confianca_amizade',
+  LIMITES_AMIZADE = 'limites_amizade'
 }
 
 export interface QuestionRule {
@@ -2105,6 +2122,118 @@ export const QUESTION_BANK: AdaptiveQuestion[] = [
     intentions: ['SEXO_NAO_FIQUEI_QUERO_FICAR'],
     roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
     weight: 0.85
+  },
+
+  // =====================================
+  // PERGUNTAS PARA QUERO_AMIZADE
+  // =====================================
+
+  {
+    id: 'amizade_nova_interesse',
+    trait: SexualTrait.INTERESSES_COMUNS,
+    category: 'Desenvolvimento de Amizade',
+    type: 'radio',
+    question: 'O que mais te chama atenção nele para desenvolver uma amizade?',
+    options: [
+      'Personalidade interessante - parece ser uma pessoa legal',
+      'Interesses em comum - gostamos das mesmas coisas',
+      'Energia positiva - me sinto bem quando estou com ele',
+      'Potencial de conexão - sinto que podemos nos dar bem'
+    ],
+    required: true,
+    intentions: ['AMIZADE_AMIZADE_NOVA'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
+  },
+
+  {
+    id: 'amizade_nova_expectativas',
+    trait: SexualTrait.TEMPO_JUNTOS,
+    category: 'Desenvolvimento de Amizade',
+    type: 'radio',
+    question: 'Como você imagina que seria a amizade com ele?',
+    options: [
+      'Amizade casual - nos vemos de vez em quando',
+      'Amizade próxima - conversar regularmente e se apoiar',
+      'Amizade de interesses - fazer atividades juntos',
+      'Amizade íntima - compartilhar coisas pessoais'
+    ],
+    required: true,
+    intentions: ['AMIZADE_AMIZADE_NOVA'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'amizade_ja_conheco_fortalecimento',
+    trait: SexualTrait.EVOLUCAO_AMIZADE,
+    category: 'Fortalecimento de Amizade',
+    type: 'radio',
+    question: 'O que você quer fortalecer na amizade com ele?',
+    options: [
+      'Confiança - dividir mais coisas pessoais',
+      'Tempo juntos - nos ver com mais frequência',
+      'Apoio mútuo - estar presente nas dificuldades',
+      'Diversão - criar mais momentos especiais juntos'
+    ],
+    required: true,
+    intentions: ['AMIZADE_AMIZADE_JA_CONHECO'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
+  },
+
+  {
+    id: 'amizade_ja_conheco_satisfacao',
+    trait: SexualTrait.SUPORTE_EMOCIONAL,
+    category: 'Fortalecimento de Amizade',
+    type: 'radio',
+    question: 'O que você mais valoriza na amizade atual com ele?',
+    options: [
+      'Lealdade - posso contar com ele sempre',
+      'Compreensão - ele me entende sem eu precisar explicar',
+      'Humor - nos divertimos muito juntos',
+      'Sinceridade - somos honestos um com o outro'
+    ],
+    required: true,
+    intentions: ['AMIZADE_AMIZADE_JA_CONHECO'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.85
+  },
+
+  {
+    id: 'amizade_interesse_desenvolver_sinais',
+    trait: SexualTrait.EVOLUCAO_AMIZADE,
+    category: 'Evolução de Amizade',
+    type: 'radio',
+    question: 'O que te faz sentir que a amizade pode evoluir para algo mais?',
+    options: [
+      'Química especial - temos uma conexão diferente',
+      'Conforto mútuo - nos sentimos à vontade um com o outro',
+      'Momentos íntimos - compartilhamos coisas pessoais',
+      'Atração sutil - sinto que há algo além da amizade'
+    ],
+    required: true,
+    intentions: ['AMIZADE_AMIZADE_INTERESSE_DESENVOLVER'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.95
+  },
+
+  {
+    id: 'amizade_interesse_desenvolver_abordagem',
+    trait: SexualTrait.LIMITES_AMIZADE,
+    category: 'Evolução de Amizade',
+    type: 'radio',
+    question: 'Como você pretende lidar com esse interesse crescente?',
+    options: [
+      'Testar o terreno - dar algumas indiretas sutis',
+      'Ser direto - conversar abertamente sobre os sentimentos',
+      'Deixar fluir - ver se ele também sente o mesmo',
+      'Preservar a amizade - não arriscar o que já temos'
+    ],
+    required: true,
+    intentions: ['AMIZADE_AMIZADE_INTERESSE_DESENVOLVER'],
+    roles: ['ATIVO', 'VERSATIL_ATIVO', 'VERSATIL_PASS', 'PASS'],
+    weight: 0.9
   }
 ];
 

@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, Heart, Flame, RotateCcw, Users, UserX, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, Flame, Users, RotateCcw, UserX, RefreshCw, Coffee, MessageCircle, Sparkles } from "lucide-react";
 
 // New cascading intention system
-export type PrimaryIntention = 'RELACIONAMENTO' | 'SEXO';
+export type PrimaryIntention = 'RELACIONAMENTO' | 'SEXO' | 'AMIZADE';
 
 export type RelationshipSubIntention = 
   | 'JA_FIQUEI'
@@ -18,9 +18,15 @@ export type SexSubIntention =
   | 'JA_FIQUEI_QUERO_NOVAMENTE'
   | 'NAO_FIQUEI_QUERO_FICAR';
 
+export type FriendshipSubIntention = 
+  | 'AMIZADE_NOVA'
+  | 'AMIZADE_JA_CONHECO'
+  | 'AMIZADE_INTERESSE_DESENVOLVER';
+
 export type UserIntention = 
   | `RELACIONAMENTO_${RelationshipSubIntention}`
-  | `SEXO_${SexSubIntention}`;
+  | `SEXO_${SexSubIntention}`
+  | `AMIZADE_${FriendshipSubIntention}`;
 
 interface IntentionSelectionProps {
   onBack: () => void;
@@ -42,6 +48,13 @@ const primaryIntentions = [
     description: 'Procuro diversão, prazer e encontros casuais',
     icon: Flame,
     color: 'text-orange-500'
+  },
+  {
+    value: 'AMIZADE' as PrimaryIntention,
+    label: 'QUERO AMIZADE',
+    description: 'Busco uma conexão amigável e companheirismo',
+    icon: Heart,
+    color: 'text-blue-500'
   }
 ];
 
@@ -95,10 +108,35 @@ const sexSubOptions = [
   }
 ];
 
+// Configuration for friendship sub-intentions
+const friendshipSubOptions = [
+  {
+    value: 'AMIZADE_NOVA' as FriendshipSubIntention,
+    label: 'ACABEI DE CONHECER',
+    description: 'Conheci ele recentemente e quero desenvolver uma amizade',
+    icon: Sparkles,
+    color: 'text-emerald-500'
+  },
+  {
+    value: 'AMIZADE_JA_CONHECO' as FriendshipSubIntention,
+    label: 'JÁ SOMOS AMIGOS',
+    description: 'Já temos uma amizade e quero fortalecê-la',
+    icon: Coffee,
+    color: 'text-amber-500'
+  },
+  {
+    value: 'AMIZADE_INTERESSE_DESENVOLVER' as FriendshipSubIntention,
+    label: 'AMIZADE QUE PODE VIRAR ALGO',
+    description: 'Começamos como amigos, mas sinto que pode evoluir',
+    icon: MessageCircle,
+    color: 'text-purple-500'
+  }
+];
+
 export default function IntentionSelection({ onBack, onNext }: IntentionSelectionProps) {
   const [step, setStep] = useState<1 | 2>(1);
   const [primarySelection, setPrimarySelection] = useState<PrimaryIntention | ''>('');
-  const [subSelection, setSubSelection] = useState<RelationshipSubIntention | SexSubIntention | ''>('');
+  const [subSelection, setSubSelection] = useState<RelationshipSubIntention | SexSubIntention | FriendshipSubIntention | ''>('');
 
   const handlePrimarySelection = (primary: PrimaryIntention) => {
     setPrimarySelection(primary);
@@ -106,7 +144,7 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
     setStep(2);
   };
 
-  const handleSubSelection = (sub: RelationshipSubIntention | SexSubIntention) => {
+  const handleSubSelection = (sub: RelationshipSubIntention | SexSubIntention | FriendshipSubIntention) => {
     setSubSelection(sub);
   };
 
@@ -132,7 +170,9 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
     ? primaryIntentions 
     : primarySelection === 'RELACIONAMENTO' 
       ? relationshipSubOptions 
-      : sexSubOptions;
+      : primarySelection === 'SEXO'
+        ? sexSubOptions
+        : friendshipSubOptions;
 
   const currentSelection = step === 1 ? primarySelection : subSelection;
 
@@ -142,7 +182,9 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
     }
     return primarySelection === 'RELACIONAMENTO' 
       ? "Como é sua situação com essa pessoa?"
-      : "Qual é sua situação com essa pessoa?";
+      : primarySelection === 'SEXO'
+        ? "Qual é sua situação com essa pessoa?"
+        : "Como é sua amizade com essa pessoa?";
   };
 
   const getSubtitle = () => {
@@ -151,7 +193,9 @@ export default function IntentionSelection({ onBack, onNext }: IntentionSelectio
     }
     return primarySelection === 'RELACIONAMENTO'
       ? "Defina o histórico do relacionamento"
-      : "Defina seu histórico de envolvimento";
+      : primarySelection === 'SEXO'
+        ? "Defina seu histórico de envolvimento"
+        : "Defina o tipo de amizade que vocês têm";
   };
 
   return (
