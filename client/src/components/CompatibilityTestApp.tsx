@@ -9,6 +9,7 @@ import ResultsPage from './ResultsPage';
 type AppState = 'welcome' | 'login' | 'register' | 'preferences' | 'questionnaire' | 'results';
 
 interface UserData {
+  id?: string;
   name: string;
   instagram: string;
   age: number;
@@ -76,50 +77,145 @@ export default function CompatibilityTestApp() {
   const handleShowRegister = () => setCurrentState('register');
   const handleBack = () => setCurrentState('welcome');
   
-  const handleLogin = (instagram: string, password: string) => {
-    // TODO: Implement actual login logic with backend
-    console.log('Login attempt:', { instagram, password });
-    // For demo purposes, create mock user data
-    setUserData({
-      name: 'Demo User',
-      instagram,
-      age: 25,
-      zodiac: 'Leo'
-    });
-    setCurrentState('preferences');
+  const handleLogin = async (instagram: string, password: string) => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ instagram, password }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Erro no login');
+        return;
+      }
+      
+      const { user } = await response.json();
+      
+      setUserData({
+        id: user.id,
+        name: user.name,
+        instagram: user.instagram,
+        age: user.age,
+        zodiac: user.zodiac
+      });
+      
+      setCurrentState('preferences');
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Erro de conex\u00e3o');
+    }
   };
   
-  const handleRegister = (data: {
+  const handleRegister = async (data: {
     name: string;
     instagram: string;
     password: string;
     birthdate: string;
     accepted: boolean;
   }) => {
-    // TODO: Implement actual registration logic with backend
-    console.log('Registration data:', data);
-    
-    const age = calculateAge(data.birthdate);
-    const zodiac = getZodiacSign(data.birthdate);
-    
-    setUserData({
-      name: data.name,
-      instagram: data.instagram,
-      age,
-      zodiac
-    });
-    
-    setCurrentState('preferences');
+    try {
+      const age = calculateAge(data.birthdate);
+      const zodiac = getZodiacSign(data.birthdate);
+      
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          instagram: data.instagram,
+          password: data.password,
+          birthdate: data.birthdate,
+          age,
+          zodiac
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Erro no cadastro');
+        return;
+      }
+      
+      const { user } = await response.json();
+      
+      setUserData({
+        id: user.id,
+        name: user.name,
+        instagram: user.instagram,
+        age: user.age,
+        zodiac: user.zodiac
+      });
+      
+      setCurrentState('preferences');
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Erro de conex\u00e3o');
+    }
   };
   
-  const handleSelectPreference = (preference: SexualPreference) => {
-    setSelectedPreference(preference);
-    setCurrentState('questionnaire');
+  const handleSelectPreference = async (preference: SexualPreference) => {
+    try {
+      if (!userData) return;
+      
+      const response = await fetch('/api/preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userData.id || userData.instagram, // fallback
+          sexualPreference: preference
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Erro ao salvar prefer\u00eancia');
+        return;
+      }
+      
+      setSelectedPreference(preference);
+      setCurrentState('questionnaire');
+    } catch (error) {
+      console.error('Preference save error:', error);
+      alert('Erro de conex\u00e3o');
+    }
   };
   
-  const handleQuestionnaireComplete = (answers: QuestionnaireAnswers) => {
-    setQuestionnaireAnswers(answers);
-    setCurrentState('results');
+  const handleQuestionnaireComplete = async (answers: QuestionnaireAnswers) => {
+    try {
+      if (!userData || !selectedPreference) return;
+      
+      const response = await fetch('/api/questionnaire', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userData.id || userData.instagram, // fallback
+          preference: selectedPreference,
+          answers
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Erro ao salvar question\u00e1rio');
+        return;
+      }
+      
+      setQuestionnaireAnswers(answers);
+      setCurrentState('results');
+    } catch (error) {
+      console.error('Questionnaire save error:', error);
+      alert('Erro de conex\u00e3o');
+    }
   };
   
   const handleRetakeTest = () => {
