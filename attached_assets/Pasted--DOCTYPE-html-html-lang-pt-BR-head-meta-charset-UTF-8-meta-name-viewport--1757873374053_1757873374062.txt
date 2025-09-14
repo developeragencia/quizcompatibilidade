@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Compatibilidade - Alex Oliveira</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+        }
+
+        .form-group input[type="date"] {
+            cursor: pointer;
+        }
+
+        #birthInfo {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .radio-option:hover {
+            background-color: #e8f0fe;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+            width: auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .compatibility-score {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .score-high { color: #28a745; }
+        .score-medium { color: #ffc107; }
+        .score-low { color: #dc3545; }
+
+        .admin-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .user-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success { background-color: #28a745; }
+        .notification.error { background-color: #dc3545; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo .heart {
+            font-size: 3rem;
+            color: #e91e63;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .card { padding: 20px; }
+            .welcome-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Página de Boas-vindas -->
+    <div id="welcomePage" class="container">
+        <div class="card">
+            <div class="logo">
+                <div class="heart">💕</div>
+            </div>
+            <div class="welcome-header">
+                <h1>Teste de Compatibilidade</h1>
+                <p>Descubra se você é compatível com Alex Oliveira para um relacionamento sério ou apenas diversão</p>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="showLogin()">Fazer Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()">Cadastrar-se</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login -->
+    <div id="loginPage" class="container hidden">
+        <div class="card">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Entrar</h2>
+            <div class="form-group">
+                <label>Instagram:</label>
+                <input type="text" id="loginInstagram" placeholder="@seunome">
+            </div>
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" id="loginPassword" placeholder="Sua senha">
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="doLogin()">Entrar</button>
+                <button class="btn btn-secondary" onclick="showWelcome()">Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cadastro -->
+    <div id="registerPage" class="container hidden">
+        <div class="card">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Cadastrar-se</h2>
+            
+            <div class="form-group">
+                <label>Primeiro Nome:</label>
+                <input type="text" id="registerName" placeholder="Ex: João">
+            </div>
+            
+            <div class="form-group">
+                <label>Instagram:</label>
+                <input type="text" id="registerInstagram" placeholder="@seunome">
+            </div>
+            
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" id="registerPassword" placeholder="Crie uma senha">
+            </div>
+            
+            <div class="form-group">
+                <label>Data de Nascimento:</label>
+                <input type="date" id="registerBirthdate" onchange="calculateAgeAndSign()">
+            </div>
+            
+            <div id="birthInfo" class="hidden" style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                <p><strong>🎂 Sua Idade:</strong> <span id="calculatedAge"></span> anos</p>
+                <p><strong>⭐ Seu Signo:</strong> <span id="calculatedSign"></span></p>
+                <p><strong>💫 Frase do Dia:</strong> <em id="dailyQuote"></em></p>
+            </div>
+            
+            <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="registerAccept" style="width: auto;">
+                    <label for="registerAccept" style="margin-bottom: 0; cursor: pointer;">
+                        Aceito participar do teste de compatibilidade e que meus dados sejam analisados pelo Alex
+                    </label>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn" onclick="doRegister()">Cadastrar</button>
+                <button class="btn btn-secondary" onclick="showWelcome()">Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Questionário -->
+    <div id="questionnairePage" class="container hidden">
+        <div class="card">
+            <div class="question-counter">
+                <span id="currentQuestion">1</span> de 20 perguntas
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="questionContainer">
+                <!-- As perguntas serão inseridas aqui dinamicamente -->
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" id="nextBtn" onclick="nextQuestion()">Próxima</button>
+                <button class="btn btn-secondary hidden" id="finishBtn" onclick="finishQuestionnaire()">Finalizar Teste</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard do Usuário -->
+    <div id="userDashboard" class="container hidden">
+        <div class="card">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Resultado da Compatibilidade</h2>
+            <div class="compatibility-score" id="compatibilityScore">85%</div>
+            <div id="compatibilityMessage" style="text-align: center; font-size: 1.2rem; margin-bottom: 30px;"></div>
+            <div class="dashboard">
+                <div class="dashboard-card">
+                    <h3>Seus Dados</h3>
+                    <div id="userData"></div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Análise Detalhada</h3>
+                    <div id="detailedAnalysis"></div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="retakeTest()">Refazer Teste</button>
+                <button class="btn btn-secondary" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Painel Admin -->
+    <div id="adminDashboard" class="container hidden">
+        <div class="card">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Painel Administrativo - Alex</h2>
+            <div class="admin-panel">
+                <h3>Usuários Cadastrados</h3>
+                <div class="user-list" id="userList"></div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="logout()">Sair</button>
+            </div>
+            <div style="text-align: center; margin-top: 30px; color: #999; font-size: 0.9rem;">
+                💻 vemnoquiz.com.br - Painel Administrativo
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Frases inspiradoras do dia
+        const dailyQuotes = [
+            "O amor verdadeiro não tem pressa, ele chega na hora certa! 💕",
+            "Seja você mesmo, a pessoa certa vai te amar assim! ✨",
+            "Hoje pode ser o dia que muda sua vida amorosa! 🌟",
+            "A honestidade é a base de qualquer relacionamento sólido! 💎",
+            "Cancerianos sabem amar de verdade, você escolheu bem! 🦀💙",
+            "O universo conspira a favor de quem busca o amor verdadeiro! 🌙",
+            "Relacionamentos sérios começam com intenções sérias! 👑",
+            "Alex valoriza lealdade, e isso é raro nos dias de hoje! 🔥",
+            "Sua sinceridade é seu maior charme, use isso a seu favor! 💫",
+            "O destino une quem deve ficar junto! 🍀",
+            "Pessoas responsáveis atraem relacionamentos duradouros! 🏆",
+            "A reciprocidade é o segredo para um amor que dura! ⚖️",
+            "Hoje é um ótimo dia para conhecer alguém especial! 🎯",
+            "Quem não trai, não mente, merece ser amado intensamente! 💖",
+            "Signos compatíveis, corações alinhados! 🌙✨"
+        ];
+
+        // Função para calcular idade e signo
+        function calculateAgeAndSign() {
+            const birthdateInput = document.getElementById('registerBirthdate');
+            const birthInfo = document.getElementById('birthInfo');
+            
+            if (!birthdateInput.value) {
+                birthInfo.classList.add('hidden');
+                return;
+            }
+
+            const birthdate = new Date(birthdateInput.value);
+            const today = new Date();
+            
+            // Calcular idade
+            let age = today.getFullYear() - birthdate.getFullYear();
+            const monthDiff = today.getMonth() - birthdate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+                age--;
+            }
+            
+            // Determinar signo
+            const month = birthdate.getMonth() + 1;
+            const day = birthdate.getDate();
+            const sign = getZodiacSign(month, day);
+            
+            // Frase aleatória do dia
+            const randomQuote = dailyQuotes[Math.floor(Math.random() * dailyQuotes.length)];
+            
+            // Atualizar interface
+            document.getElementById('calculatedAge').textContent = age;
+            document.getElementById('calculatedSign').textContent = sign;
+            document.getElementById('dailyQuote').textContent = randomQuote;
+            
+            birthInfo.classList.remove('hidden');
+        }
+
+        // Função para determinar o signo
+        function getZodiacSign(month, day) {
+            const signs = [
+                { sign: 'Capricórnio ♑', start: [12, 22], end: [1, 19] },
+                { sign: 'Aquário ♒', start: [1, 20], end: [2, 18] },
+                { sign: 'Peixes ♓', start: [2, 19], end: [3, 20] },
+                { sign: 'Áries ♈', start: [3, 21], end: [4, 19] },
+                { sign: 'Touro ♉', start: [4, 20], end: [5, 20] },
+                { sign: 'Gêmeos ♊', start: [5, 21], end: [6, 20] },
+                { sign: 'Câncer ♋', start: [6, 21], end: [7, 22] },
+                { sign: 'Leão ♌', start: [7, 23], end: [8, 22] },
+                { sign: 'Virgem ♍', start: [8, 23], end: [9, 22] },
+                { sign: 'Libra ♎', start: [9, 23], end: [10, 22] },
+                { sign: 'Escorpião ♏', start: [10, 23], end: [11, 21] },
+                { sign: 'Sagitário ♐', start: [11, 22], end: [12, 21] }
+            ];
+
+            for (let i = 0; i < signs.length; i++) {
+                const s = signs[i];
+                const [startMonth, startDay] = s.start;
+                const [endMonth, endDay] = s.end;
+                
+                if (startMonth === endMonth) {
+                    if (month === startMonth && day >= startDay && day <= endDay) {
+                        return s.sign;
+                    }
+                } else {
+                    if ((month === startMonth && day >= startDay) || 
+                        (month === endMonth && day <= endDay)) {
+                        return s.sign;
+                    }
+                }
+            }
+            return 'Signo não identificado';
+        }
+
+        // Simulação de banco de dados em memória
+        let database = {
+            users: [
+                {
+                    id: 1,
+                    name: 'Alex Oliveira',
+                    instagram: '@alex_admin',
+                    password: 'admin123',
+                    age: 40,
+                    birthdate: '1984-07-15', // Data exemplo para Câncer
+                    sign: 'Câncer ♋',
+                    isAdmin: true,
+                    answers: null,
+                    score: null
+                }
+            ],
+            nextId: 2
+        };
+
+        let currentUser = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+
+        // Perguntas do teste baseadas no perfil do Alex
+        const questions = [
+            {
+                id: 1,
+                text: "Você já conhece Alex pessoalmente?",
+                options: [
+                    { value: 10, text: "Sim, já nos conhecemos pessoalmente" },
+                    { value: 5, text: "Não, mas já conversamos online" },
+                    { value: 0, text: "Não, esta é nossa primeira interação" }
+                ]
+            },
+            {
+                id: 2,
+                text: "Você já ficou com Alex anteriormente?",
+                options: [
+                    { value: 10, text: "Sim, já ficamos juntos" },
+                    { value: 5, text: "Quase rolou, mas não aconteceu" },
+                    { value: 0, text: "Nunca ficamos" }
+                ]
+            },
+            {
+                id: 3,
+                text: "Você tem vontade de ficar com Alex?",
+                options: [
+                    { value: 10, text: "Sim, tenho muito interesse" },
+                    { value: 7, text: "Sim, tenho interesse moderado" },
+                    { value: 3, text: "Talvez, dependendo da situação" },
+                    { value: 0, text: "Não tenho interesse" }
+                ]
+            },
+            {
+                id: 4,
+                text: "Qual é sua orientação sexual?",
+                options: [
+                    { value: 10, text: "Homossexual" },
+                    { value: 8, text: "Bissexual" },
+                    { value: 5, text: "Pansexual" },
+                    { value: 0, text: "Heterossexual" }
+                ]
+            },
+            {
+                id: 5,
+                text: "Qual sua preferência em relação à posição sexual?",
+                options: [
+                    { value: 8, text: "Versátil (tanto ativo quanto passivo)" },
+                    { value: 6, text: "Preferencialmente ativo" },
+                    { value: 6, text: "Preferencialmente passivo" },
+                    { value: 4, text: "Não tenho preferência definida" }
+                ]
+            },
+            {
+                id: 6,
+                text: "Você teria interesse em ser ativo ou passivo com Alex?",
+                options: [
+                    { value: 10, text: "Tanto ativo quanto passivo" },
+                    { value: 8, text: "Preferencialmente ativo" },
+                    { value: 8, text: "Preferencialmente passivo" },
+                    { value: 3, text: "Ainda não pensei sobre isso" }
+                ]
+            },
+            {
+                id: 7,
+                text: "Qual seu signo?",
+                options: [
+                    { value: 10, text: "Câncer (como Alex)" },
+                    { value: 8, text: "Escorpião ou Peixes (signos de água)" },
+                    { value: 6, text: "Touro, Virgem ou Capricórnio (signos de terra)" },
+                    { value: 4, text: "Outros signos" }
+                ]
+            },
+            {
+                id: 8,
+                text: "Que tipo de relacionamento você está procurando?",
+                options: [
+                    { value: 10, text: "Relacionamento sério e duradouro" },
+                    { value: 3, text: "Algo casual que pode evoluir" },
+                    { value: 0, text: "Apenas diversão sem compromisso" },
+                    { value: -5, text: "Não estou procurando nada específico" }
+                ]
+            },
+            {
+                id: 9,
+                text: "Como você se sente sobre relacionamentos abertos ou ménage à trois?",
+                options: [
+                    { value: 10, text: "Não curto, prefiro exclusividade" },
+                    { value: 3, text: "Não é minha preferência, mas conversaria" },
+                    { value: -5, text: "Estou aberto(a) a essas experiências" },
+                    { value: -10, text: "Adoro e sempre busco isso" }
+                ]
+            },
+            {
+                id: 10,
+                text: "Qual sua situação profissional atual?",
+                options: [
+                    { value: 10, text: "Empregado(a) com carteira assinada" },
+                    { value: 8, text: "Empresário(a) ou autônomo(a)" },
+                    { value: 5, text: "Estudante que trabalha" },
+                    { value: 0, text: "Desempregado(a) ou só estudando" }
+                ]
+            },
+            {
+                id: 11,
+                text: "Como você lida com responsabilidades financeiras?",
+                options: [
+                    { value: 10, text: "Sou muito responsável e organizado(a)" },
+                    { value: 7, text: "Geralmente sou responsável" },
+                    { value: 3, text: "Às vezes tenho dificuldades" },
+                    { value: 0, text: "Não sou muito organizado(a) com dinheiro" }
+                ]
+            },
+            {
+                id: 12,
+                text: "Como você vê a reciprocidade em um relacionamento?",
+                options: [
+                    { value: 10, text: "Essencial - tem que ser 50/50 em tudo" },
+                    { value: 8, text: "Muito importante, mas pode variar" },
+                    { value: 4, text: "Importante, mas não sempre necessária" },
+                    { value: 0, text: "Não me incomodo em dar mais que receber" }
+                ]
+            },
+            {
+                id: 13,
+                text: "Qual sua posição sobre traição?",
+                options: [
+                    { value: 10, text: "Inaceitável em qualquer circunstância" },
+                    { value: 5, text: "Depende do tipo de traição" },
+                    { value: 0, text: "Pode ser perdoável dependendo do caso" },
+                    { value: -10, text: "Faz parte da vida, pode acontecer" }
+                ]
+            },
+            {
+                id: 14,
+                text: "Como você lida com mentiras em relacionamentos?",
+                options: [
+                    { value: 10, text: "Sempre prefiro a verdade, mesmo doendo" },
+                    { value: 7, text: "Depende da situação, mas prefiro honestidade" },
+                    { value: 3, text: "Mentiras pequenas são aceitáveis" },
+                    { value: 0, text: "Às vezes mentir é necessário" }
+                ]
+            },
+            {
+                id: 15,
+                text: "Sua faixa etária?",
+                options: [
+                    { value: 10, text: "35-45 anos (próximo à idade do Alex)" },
+                    { value: 8, text: "25-35 anos" },
+                    { value: 6, text: "45-55 anos" },
+                    { value: 3, text: "18-25 anos ou 55+ anos" }
+                ]
+            },
+            {
+                id: 16,
+                text: "Como você se comporta em compromissos e encontros?",
+                options: [
+                    { value: 10, text: "Sempre pontual e confiável" },
+                    { value: 7, text: "Geralmente pontual" },
+                    { value: 3, text: "Às vezes me atraso" },
+                    { value: 0, text: "Não sou muito pontual" }
+                ]
+            },
+            {
+                id: 17,
+                text: "O que você valoriza mais em um parceiro?",
+                options: [
+                    { value: 10, text: "Honestidade e lealdade" },
+                    { value: 8, text: "Responsabilidade e maturidade" },
+                    { value: 6, text: "Diversão e espontaneidade" },
+                    { value: 4, text: "Aparência física" }
+                ]
+            },
+            {
+                id: 18,
+                text: "Como você lida com conflitos em relacionamentos?",
+                options: [
+                    { value: 10, text: "Converso abertamente para resolver" },
+                    { value: 7, text: "Tento resolver, mas às vezes evito" },
+                    { value: 3, text: "Prefiro evitar confrontos" },
+                    { value: 0, text: "Costumo fugir de conflitos" }
+                ]
+            },
+            {
+                id: 19,
+                text: "Qual sua disponibilidade para um relacionamento sério?",
+                options: [
+                    { value: 10, text: "Totalmente disponível e interessado(a)" },
+                    { value: 7, text: "Disponível, mas com algumas reservas" },
+                    { value: 3, text: "Parcialmente disponível" },
+                    { value: 0, text: "Não estou totalmente disponível agora" }
+                ]
+            },
+            {
+                id: 20,
+                text: "Como você se vê daqui a 2 anos?",
+                options: [
+                    { value: 10, text: "Em um relacionamento estável e sério" },
+                    { value: 7, text: "Construindo algo sólido com alguém" },
+                    { value: 3, text: "Aproveitando a vida sem pressa" },
+                    { value: 0, text: "Focado(a) em outras prioridades" }
+                ]
+            }
+        ];
+
+        // Funções de navegação
+        function showWelcome() {
+            hideAllPages();
+            document.getElementById('welcomePage').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            hideAllPages();
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+
+        function showRegister() {
+            hideAllPages();
+            document.getElementById('registerPage').classList.remove('hidden');
+        }
+
+        function hideAllPages() {
+            document.querySelectorAll('.container').forEach(page => {
+                page.classList.add('hidden');
+            });
+        }
+
+        // Funções de autenticação
+        function doLogin() {
+            const instagram = document.getElementById('loginInstagram').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!instagram || !password) {
+                showNotification('Preencha todos os campos', 'error');
+                return;
+            }
+
+            const user = database.users.find(u => u.instagram === instagram && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                showNotification('Login realizado com sucesso!', 'success');
+                
+                if (user.isAdmin) {
+                    showAdminDashboard();
+                } else if (user.answers) {
+                    showUserDashboard();
+                } else {
+                    startQuestionnaire();
+                }
+            } else {
+                showNotification('Instagram ou senha incorretos', 'error');
+            }
+        }
+
+        function doRegister() {
+            const name = document.getElementById('registerName').value;
+            const instagram = document.getElementById('registerInstagram').value;
+            const password = document.getElementById('registerPassword').value;
+            const birthdateInput = document.getElementById('registerBirthdate').value;
+            const accept = document.getElementById('registerAccept').checked;
+
+            if (!name || !instagram || !password || !birthdateInput) {
+                showNotification('Preencha todos os campos', 'error');
+                return;
+            }
+
+            if (!accept) {
+                showNotification('Você precisa aceitar os termos para continuar', 'error');
+                return;
+            }
+
+            if (database.users.find(u => u.instagram === instagram)) {
+                showNotification('Este Instagram já está cadastrado', 'error');
+                return;
+            }
+
+            // Calcular idade a partir da data de nascimento
+            const birthdate = new Date(birthdateInput);
+            const today = new Date();
+            let age = today.getFullYear() - birthdate.getFullYear();
+            const monthDiff = today.getMonth() - birthdate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+                age--;
+            }
+
+            // Calcular signo
+            const month = birthdate.getMonth() + 1;
+            const day = birthdate.getDate();
+            const sign = getZodiacSign(month, day);
+
+            const newUser = {
+                id: database.nextId++,
+                name,
+                instagram,
+                password,
+                age: age,
+                birthdate: birthdateInput,
+                sign: sign,
+                isAdmin: false,
+                answers: null,
+                score: null
+            };
+
+            database.users.push(newUser);
+            currentUser = newUser;
+            
+            showNotification('Cadastro realizado com sucesso!', 'success');
+            startQuestionnaire();
+        }
+
+        function logout() {
+            currentUser = null;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            userPreference = null;
+            currentQuestions = [];
+            showWelcome();
+        }
+
+        // Funções do questionário
+        function startQuestionnaire() {
+            hideAllPages();
+            document.getElementById('questionnairePage').classList.remove('hidden');
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>${question.text}</h3>
+                    <div class="radio-group">
+                        ${question.options.map((option, index) => `
+                            <div class="radio-option">
+                                <input type="radio" name="q${question.id}" value="${option.value}" id="opt${index}">
+                                <label for="opt${index}">${option.text}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('progressFill').style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('finishBtn').classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector(`input[name="q${questions[currentQuestionIndex].id}"]:checked`);
+            
+            if (!selectedOption) {
+                showNotification('Selecione uma resposta', 'error');
+                return;
+            }
+
+            userAnswers[questions[currentQuestionIndex].id] = parseInt(selectedOption.value);
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            }
+        }
+
+        function finishQuestionnaire() {
+            const selectedOption = document.querySelector(`input[name="q${questions[currentQuestionIndex].id}"]:checked`);
+            
+            if (!selectedOption) {
+                showNotification('Selecione uma resposta', 'error');
+                return;
+            }
+
+            userAnswers[questions[currentQuestionIndex].id] = parseInt(selectedOption.value);
+            
+            // Calcular pontuação
+            const score = calculateCompatibility();
+            currentUser.answers = userAnswers;
+            currentUser.score = score;
+            
+            showUserDashboard();
+        }
+
+        function calculateCompatibility() {
+            let totalScore = 0;
+            let maxPossibleScore = 0;
+
+            questions.forEach(question => {
+                const userAnswer = userAnswers[question.id];
+                const maxScore = Math.max(...question.options.map(opt => opt.value));
+                
+                totalScore += userAnswer;
+                maxPossibleScore += maxScore;
+            });
+
+            // Converter para porcentagem, considerando que algumas respostas podem ser negativas
+            const percentage = Math.max(0, Math.round((totalScore / maxPossibleScore) * 100));
+            return Math.min(100, percentage);
+        }
+
+        // Dashboards
+        function showUserDashboard() {
+            hideAllPages();
+            document.getElementById('userDashboard').classList.remove('hidden');
+            
+            const score = currentUser.score;
+            const scoreElement = document.getElementById('compatibilityScore');
+            const messageElement = document.getElementById('compatibilityMessage');
+            
+            scoreElement.textContent = `${score}%`;
+            
+            // Mensagens engraçadas baseadas na pontuação
+            const funnyMessages = {
+                perfect: [
+                    "🔥 <strong>BINGO! COMPATIBILIDADE EXPLOSIVA!</strong><br>Alex já está escolhendo o local do primeiro encontro! Prepare o coração que vem namoro sério por aí! 💕",
+                    "⭐ <strong>JACKPOT AMOROSO!</strong><br>Vocês são tão compatíveis que até os astros estão fazendo fofoca! Câncer + Você = Receita para o amor! 🌟",
+                    "💎 <strong>MATCH PERFEITO!</strong><br>Alex deve estar pensando: 'Finalmente alguém que não quer só diversão!' Prepare-se para ser mimado(a)! 👑"
+                ],
+                high: [
+                    "🚀 <strong>ALTA COMPATIBILIDADE!</strong><br>Alex ficou interessado! Vocês têm tudo para dar certo, só não estraga sendo infiel, hein? 😏",
+                    "🎯 <strong>BULLS EYE!</strong><br>Parabéns, você acertou no que Alex procura! Agora é só não mentir, não trair e ser responsável. Fácil, né? 😂",
+                    "💝 <strong>COMBO PERFEITO!</strong><br>Sua personalidade + Alex = Relacionamento dos sonhos! Ele deve estar pensando em te apresentar para a família! 🏠"
+                ],
+                medium: [
+                    "⚡ <strong>COMPATIBILIDADE OK</strong><br>Vocês podem dar certo, MAS... Alex tá meio assim: 🤔 'Será que rola namoro ou só uma ficada?' Conversa rola! 💬",
+                    "🎭 <strong>SITUAÇÃO COMPLICADA</strong><br>Alex gostou de você, mas tá na dúvida se você quer a mesma coisa que ele. Hora de bater um papo sério! ☕",
+                    "🎪 <strong>QUASE LÁ!</strong><br>Vocês têm potencial, mas Alex ainda não sabe se você é 'pra casar' ou 'pra zoar'. Define aí o que você quer! 🤷‍♂️"
+                ],
+                low: [
+                    "❄️ <strong>EITA... COMPATIBILIDADE BAIXA!</strong><br>Alex olhou seus resultados e pensou: 'Acho que essa pessoa quer só diversão'. Talvez vocês queiram coisas diferentes mesmo! 🤷‍♂️",
+                    "🚫 <strong>HOUSTON, TEMOS UM PROBLEMA!</strong><br>Suas respostas fizeram Alex pensar duas vezes. Ele quer algo sério e você... bem, talvez não tanto assim! 😅",
+                    "⛔ <strong>ZONA VERMELHA!</strong><br>Alex ficou assim: 😬 'Melhor ser só amigo mesmo!' Vocês estão em ondas MUITO diferentes! Mas quem sabe como amigos? 🤝"
+                ],
+                terrible: [
+                    "💥 <strong>CATÁSTROFE AMOROSA!</strong><br>Alex leu suas respostas e ligou pro melhor amigo: 'Cara, essa pessoa é o oposto do que procuro!' Sorry, não rolou! 🙈",
+                    "🆘 <strong>MISSÃO IMPOSSÍVEL!</strong><br>Vocês são tão incompatíveis que nem Tom Cruise conseguiria fazer esse relacionamento dar certo! Melhor procurar outro rumo! 🎬",
+                    "🧨 <strong>BOMBA RELÓGIO!</strong><br>Alex viu o resultado e saiu correndo! Vocês juntos seria tipo misturar água com óleo... não rola mesmo! 💨"
+                ]
+            };
+
+            let messageArray, categoryClass;
+            
+            if (score >= 95) {
+                messageArray = funnyMessages.perfect;
+                categoryClass = 'score-high';
+            } else if (score >= 80) {
+                messageArray = funnyMessages.high;
+                categoryClass = 'score-high';
+            } else if (score >= 50) {
+                messageArray = funnyMessages.medium;
+                categoryClass = 'score-medium';
+            } else if (score >= 25) {
+                messageArray = funnyMessages.low;
+                categoryClass = 'score-low';
+            } else {
+                messageArray = funnyMessages.terrible;
+                categoryClass = 'score-low';
+            }
+
+            scoreElement.className = `compatibility-score ${categoryClass}`;
+            
+            // Escolher mensagem aleatória da categoria
+            const randomMessage = messageArray[Math.floor(Math.random() * messageArray.length)];
+            messageElement.innerHTML = randomMessage;
+
+            // Dados do usuário
+            document.getElementById('userData').innerHTML = `
+                <p><strong>Nome:</strong> ${currentUser.name}</p>
+                <p><strong>Instagram:</strong> ${currentUser.instagram}</p>
+                <p><strong>Idade:</strong> ${currentUser.age} anos</p>
+                <p><strong>Signo:</strong> ${currentUser.sign}</p>
+                <p><strong>Score:</strong> ${score}% de compatibilidade</p>
+            `;
+
+            // Análise detalhada engraçada
+            const detailedAnalysis = {
+                perfect: [
+                    "🎯 Você literalmente respondeu tudo que Alex queria ouvir! Ele deve estar pensando: 'Onde essa pessoa estava escondida?' Seus valores batem 100%!",
+                    "👑 Alex ficou impressionado! Vocês são tão parecidos que ele já tá imaginando apresentações para família. Cuidado pra não virar filme do Hallmark!",
+                    "🌟 Parabéns, você decodificou o Alex perfeitamente! Responsabilidade, fidelidade, seriedade... você tem o 'kit completo' que ele busca!"
+                ],
+                high: [
+                    "🔥 Você acertou na maioria dos pontos que Alex valoriza! Ele ficou tipo: 'Hmm, interessante...' Só algumas coisinhas pra ajustar, mas nada grave!",
+                    "✨ Alex aprovou seu perfil! Vocês têm química boa, só precisa deixar claro que não é bagunça nem pegação. Ele quer coisa séria mesmo!",
+                    "🎪 Você passou no teste básico do Alex, mas ele ainda tá analisando se você é 'material de relacionamento'. Mostre que é confiável!"
+                ],
+                medium: [
+                    "🤔 Alex ficou confuso com suas respostas! Hora você parece querer algo sério, hora parece que só quer diversão. Define aí o que você quer!",
+                    "⚖️ Vocês estão no 'mais ou menos'! Alex gostou de algumas coisas, mas outras fizeram ele franzir a testa. Conversem antes de decidir!",
+                    "🎭 Situação meio dramática: vocês podem dar certo OU pode ser um desastre total. Alex tá na dúvida se vale o risco ou não!"
+                ],
+                low: [
+                    "😅 Alex leu suas respostas e pensou: 'Essa pessoa tá procurando o oposto do que ofereço!' Vocês querem coisas bem diferentes mesmo!",
+                    "🚫 Suas expectativas não batem com as do Alex nem com reza forte! Ele quer compromisso e você... bem, talvez não tanto assim!",
+                    "🤷‍♂️ Alex ficou tipo: 'Melhor sermos amigos mesmo!' Vocês estão em fases muito diferentes da vida amorosa!"
+                ],
+                terrible: [
+                    "💥 Alex viu o resultado e falou: 'NOSSA, que diferença!' Vocês são incompatíveis até na escolha de filme! Melhor cada um pro seu lado!",
+                    "🆘 Vocês juntos seria tipo tentar fazer funcionar iPhone com carregador de Nokia antigo... simplesmente NÃO VAI ROLAR!",
+                    "🏃‍♂️ Alex já saiu de fininho! Suas respostas foram tão opostas ao que ele quer que ele preferiu nem arriscar uma amizade!"
+                ]
+            };
+
+            let analysisArray;
+            if (score >= 95) {
+                analysisArray = detailedAnalysis.perfect;
+            } else if (score >= 80) {
+                analysisArray = detailedAnalysis.high;
+            } else if (score >= 50) {
+                analysisArray = detailedAnalysis.medium;
+            } else if (score >= 25) {
+                analysisArray = detailedAnalysis.low;
+            } else {
+                analysisArray = detailedAnalysis.terrible;
+            }
+
+            const randomAnalysis = analysisArray[Math.floor(Math.random() * analysisArray.length)];
+            
+            document.getElementById('detailedAnalysis').innerHTML = `<p>${randomAnalysis}</p>`;
+        }
+
+        function showAdminDashboard() {
+            hideAllPages();
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            updateUserList();
+        }
+
+        function updateUserList() {
+            const userList = document.getElementById('userList');
+            const regularUsers = database.users.filter(u => !u.isAdmin);
+            
+            userList.innerHTML = regularUsers.map(user => {
+                let statusIcon = '⏳ PENDENTE';
+                let statusComment = 'Ainda não fez o teste';
+                
+                if (user.score !== null) {
+                    if (user.score >= 95) {
+                        statusIcon = '💎 PERFEITO';
+                        statusComment = 'UAAAAU! Candidato(a) ideal!';
+                    } else if (user.score >= 80) {
+                        statusIcon = '🔥 ALTA';
+                        statusComment = 'Esse(a) serve pra namorar!';
+                    } else if (user.score >= 50) {
+                        statusIcon = '⚡ MÉDIA';
+                        statusComment = 'Talvez role algo...';
+                    } else if (user.score >= 25) {
+                        statusIcon = '❄️ BAIXA';
+                        statusComment = 'Melhor só amizade';
+                    } else {
+                        statusIcon = '💥 PÉSSIMA';
+                        statusComment = 'Foge, Alex, FOGE!';
+                    }
+                }
+                
+                return `
+                    <div class="user-item">
+                        <div>
+                            <strong>${user.name}</strong> (${user.instagram})<br>
+                            ${user.age} anos - ${user.sign || 'Signo não informado'}<br>
+                            ${user.score !== null ? `<strong>Compatibilidade: ${user.score}%</strong>` : 'Teste não realizado'}<br>
+                            <small style="color: #666; font-style: italic;">${statusComment}</small>
+                        </div>
+                        <div style="text-align: right; font-size: 1.2rem;">
+                            ${statusIcon}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            if (regularUsers.length === 0) {
+                userList.innerHTML = `
+                    <div style="text-align: center; color: #666; padding: 40px;">
+                        <h3>🦗 Nenhum usuário cadastrado ainda</h3>
+                        <p>Compartilhe o link do teste para as pessoas interessadas!</p>
+                    </div>
+                `;
+            }
+        }
+
+        function retakeTest() {
+            currentUser.answers = null;
+            currentUser.score = null;
+            startQuestionnaire();
+        }
+
+        // Notificações
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            showWelcome();
+        });
+    </script>
+</body>
+</html>
