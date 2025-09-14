@@ -2,6 +2,7 @@ import { useState } from "react";
 import WelcomePage from './WelcomePage';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import IntentionSelection, { type UserIntention } from './IntentionSelection';
 import PreferenceSelection, { type SexualPreference } from './PreferenceSelection';
 import DynamicQuestionnaire, { type QuestionnaireAnswers } from './DynamicQuestionnaire';
 import ResultsPage from './ResultsPage';

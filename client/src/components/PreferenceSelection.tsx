@@ -9,50 +9,36 @@ interface PreferenceSelectionProps {
   onSelectPreference: (preference: SexualPreference) => void;
 }
 
-export type SexualPreference = "ativo" | "passivo" | "versatil_ativo" | "versatil_passivo" | "totalmente_ativo" | "totalmente_passivo";
+export type SexualPreference = "ATIVO" | "VERSATIL_ATIVO" | "VERSATIL_PASS" | "PASS";
 
 const preferences = [
   {
-    id: "totalmente_ativo" as SexualPreference,
-    title: "Totalmente Ativo",
-    description: "Sempre no controle, gosta de dominar",
+    id: "ATIVO" as SexualPreference,
+    title: "ATIVO",
+    description: "Sempre prefiro ser o ativo - dominar e penetrar",
     icon: "🔥",
     color: "bg-red-100 hover:bg-red-200 border-red-300"
   },
   {
-    id: "ativo" as SexualPreference,
-    title: "Ativo", 
-    description: "Gosta de liderar, mas tem flexibilidade",
+    id: "VERSATIL_ATIVO" as SexualPreference,
+    title: "VERSÁTIL ATIVO", 
+    description: "Sou versátil mas prefiro ser ativo na maioria das vezes",
     icon: "⚡",
     color: "bg-orange-100 hover:bg-orange-200 border-orange-300"
   },
   {
-    id: "versatil_ativo" as SexualPreference,
-    title: "Versátil Ativo",
-    description: "Flexível mas prefere ser ativo",
-    icon: "🌟",
-    color: "bg-yellow-100 hover:bg-yellow-200 border-yellow-300"
-  },
-  {
-    id: "versatil_passivo" as SexualPreference,
-    title: "Versátil Passivo",
-    description: "Flexível mas prefere ser passivo",
+    id: "VERSATIL_PASS" as SexualPreference,
+    title: "VERSÁTIL PASS",
+    description: "Sou versátil mas prefiro ser passivo na maioria das vezes",
     icon: "🌸",
-    color: "bg-green-100 hover:bg-green-200 border-green-300"
-  },
-  {
-    id: "passivo" as SexualPreference,
-    title: "Passivo",
-    description: "Gosta de ser conduzido",
-    icon: "💖",
-    color: "bg-blue-100 hover:bg-blue-200 border-blue-300"
-  },
-  {
-    id: "totalmente_passivo" as SexualPreference,
-    title: "Totalmente Passivo",
-    description: "Sempre receptivo, gosta de ser dominado",
-    icon: "🎀",
     color: "bg-purple-100 hover:bg-purple-200 border-purple-300"
+  },
+  {
+    id: "PASS" as SexualPreference,
+    title: "PASS",
+    description: "Sempre prefiro ser o passivo - ser dominado e penetrado",
+    icon: "🎀",
+    color: "bg-green-100 hover:bg-green-200 border-green-300"
   }
 ];
 
@@ -79,10 +65,10 @@ export default function PreferenceSelection({ onBack, onSelectPreference }: Pref
           <div className="text-center mb-8">
             <User className="mx-auto h-16 w-16 text-primary mb-4" data-testid="icon-user" />
             <h2 className="text-3xl font-bold text-primary mb-4" data-testid="text-title">
-              Qual é o seu estilo?
+              Qual é seu papel sexual?
             </h2>
             <p className="text-muted-foreground text-lg" data-testid="text-subtitle">
-              Selecione sua preferência para personalizarmos o questionário especialmente para você
+              Defina sua posição preferida na relação sexual para personalizar as perguntas
             </p>
           </div>
           
