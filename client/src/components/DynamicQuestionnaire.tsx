@@ -44,6 +44,8 @@ function mapPreferenceToRole(preference?: SexualPreference): SexualRole | undefi
 }
 
 export default function DynamicQuestionnaire({ intention, preference, onBack, onComplete }: DynamicQuestionnaireProps) {
+  // Componente de questionário dinâmico adaptativo
+  // Mapeia preferência sexual para papel sexual
   const role = mapPreferenceToRole(preference);
   const initialQuestions = getQuestionsForIntentionAndRole(intention, role);
   
@@ -61,6 +63,7 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   const progress = hasQuestions ? ((questionnaireState.currentIndex + 1) / questionnaireState.questionQueue.length) * 100 : 0;
   
   const handleAnswer = (value: string | number) => {
+  // Salva resposta e adiciona perguntas de follow-up se necessário
     if (!currentQuestion) return;
     
     const questionId = currentQuestion.id;
@@ -100,6 +103,7 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   };
   
   const canProceed = () => {
+  // Valida se pode avançar para próxima pergunta
     if (!currentQuestion) return false;
     
     const answer = answers[currentQuestion.id];
@@ -110,6 +114,7 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   };
   
   const handleNext = () => {
+  // Avança para próxima pergunta ou finaliza
     if (questionnaireState.currentIndex < questionnaireState.questionQueue.length - 1) {
       setQuestionnaireState(prev => ({
         ...prev,
@@ -121,6 +126,7 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
   };
   
   const handlePrevious = () => {
+  // Volta para pergunta anterior
     if (questionnaireState.currentIndex > 0) {
       setQuestionnaireState(prev => ({
         ...prev,
@@ -142,10 +148,11 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
             onValueChange={handleAnswer}
             className="space-y-3"
             data-testid={`radio-group-${currentQuestion.id}`}
+            aria-labelledby={`question-label-${currentQuestion.id}`}
           >
             {currentQuestion.options?.map((option, idx) => (
               <div key={idx} className="flex items-center space-x-2">
-                <RadioGroupItem value={option} id={`${currentQuestion.id}-${idx}`} data-testid={`radio-${currentQuestion.id}-${idx}`} />
+                <RadioGroupItem value={option} id={`${currentQuestion.id}-${idx}`} data-testid={`radio-${currentQuestion.id}-${idx}`} aria-checked={answer === option} tabIndex={0} />
                 <Label htmlFor={`${currentQuestion.id}-${idx}`} className="cursor-pointer" data-testid={`label-${currentQuestion.id}-${idx}`}>
                   {option}
                 </Label>
@@ -153,32 +160,45 @@ export default function DynamicQuestionnaire({ intention, preference, onBack, on
             ))}
           </RadioGroup>
         );
-        
       case 'input':
       case 'number':
         return (
-          <Input
-            type={currentQuestion.type === 'number' ? 'number' : 'text'}
-            value={answer as string || ''}
-            onChange={(e) => handleAnswer(e.target.value)}
-            placeholder={currentQuestion.placeholder}
-            className="w-full"
-            data-testid={`input-${currentQuestion.id}`}
-          />
+          <div>
+            <Label htmlFor={`input-${currentQuestion.id}`} id={`question-label-${currentQuestion.id}`} className="mb-2 block">
+              {currentQuestion.placeholder || 'Resposta'}
+            </Label>
+            <Input
+              id={`input-${currentQuestion.id}`}
+              type={currentQuestion.type === 'number' ? 'number' : 'text'}
+              value={answer as string || ''}
+              onChange={(e) => handleAnswer(e.target.value)}
+              placeholder={currentQuestion.placeholder}
+              className="w-full"
+              data-testid={`input-${currentQuestion.id}`}
+              aria-required={currentQuestion.required}
+              aria-label={currentQuestion.placeholder || 'Resposta'}
+            />
+          </div>
         );
-        
       case 'textarea':
         return (
-          <Textarea
-            value={answer as string || ''}
-            onChange={(e) => handleAnswer(e.target.value)}
-            placeholder={currentQuestion.placeholder}
-            rows={4}
-            className="w-full"
-            data-testid={`textarea-${currentQuestion.id}`}
-          />
+          <div>
+            <Label htmlFor={`textarea-${currentQuestion.id}`} id={`question-label-${currentQuestion.id}`} className="mb-2 block">
+              {currentQuestion.placeholder || 'Resposta'}
+            </Label>
+            <Textarea
+              id={`textarea-${currentQuestion.id}`}
+              value={answer as string || ''}
+              onChange={(e) => handleAnswer(e.target.value)}
+              placeholder={currentQuestion.placeholder}
+              rows={4}
+              className="w-full"
+              data-testid={`textarea-${currentQuestion.id}`}
+              aria-required={currentQuestion.required}
+              aria-label={currentQuestion.placeholder || 'Resposta'}
+            />
+          </div>
         );
-        
       default:
         return null;
     }

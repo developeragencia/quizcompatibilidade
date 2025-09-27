@@ -46,69 +46,85 @@ const funTips = [
 ];
 
 const calculateCompatibility = (answers: QuestionnaireAnswers, preference: SexualPreference): CompatibilityResult => {
+  // Função que calcula compatibilidade considerando pesos e respostas parciais
   let score = 0;
   let totalQuestions = Object.keys(answers).length;
   
   // Alex's "ideal" answers for 100% compatibility (as requested by user)
   const idealAnswers: { [key: string]: string } = {
     hygiene: 'Sempre, é fundamental',
-    shower_before: 'Sempre',
-    work_life: 'Amo o que faço',
-    relationship_type: 'Algo sério e duradouro',
-    sexual_frequency: 'Algumas vezes por semana',
-    // Add more ideal answers based on preference
-  };
-  
-  // Add preference-specific ideal answers
-  if (preference.includes('ativo')) {
-    idealAnswers.penis_size = '18'; // example
-    idealAnswers.likes_in_bottom = 'Bunda média';
-    idealAnswers.sexual_intensity = 'Intenso e quente';
-  }
-  
-  if (preference.includes('passivo')) {
-    idealAnswers.butt_size = 'Média';
-    idealAnswers.butt_tightness = 'Apertada';
-    idealAnswers.likes_in_top = 'Personalidade';
-  }
-  
-  // Calculate score - must be 100% to "win" as requested
-  Object.keys(answers).forEach(questionId => {
-    if (idealAnswers[questionId] && answers[questionId] === idealAnswers[questionId]) {
-      score++;
+    // Novo cálculo: considera pesos das perguntas e respostas parciais
+    // Ideal answers e pesos podem ser expandidos conforme questionBank
+    const idealAnswers: { [key: string]: string } = {
+      hygiene: 'Sempre, é fundamental',
+      shower_before: 'Sempre',
+      work_life: 'Amo o que faço',
+      relationship_type: 'Algo sério e duradouro',
+      sexual_frequency: 'Algumas vezes por semana',
+      // Adicione mais conforme necessário
+    };
+    // Preferência específica
+    if (preference.includes('ativo')) {
+      idealAnswers.penis_size = '18';
+      idealAnswers.likes_in_bottom = 'Bunda média';
+      idealAnswers.sexual_intensity = 'Intenso e quente';
     }
-  });
-  
-  const percentage = Math.round((score / totalQuestions) * 100);
-  
-  let message: string;
-  let color: string;
-  
-  if (percentage === 100) {
-    message = "🎉 PERFEITO! Vocês são totalmente compatíveis! Alex está esperando por você! 💖";
-    color = "text-green-600";
-  } else if (percentage >= 90) {
-    message = "😊 Quase lá! Vocês têm muita compatibilidade, mas alguns ajustes podem ajudar.";
-    color = "text-yellow-600";
-  } else if (percentage >= 70) {
-    message = "🤔 Compatibilidade moderada. Há potencial, mas precisam conversar mais sobre expectativas.";
-    color = "text-orange-600";
-  } else {
-    message = "😔 Pouca compatibilidade no momento. Talvez vocês sejam melhores como amigos por enquanto.";
-    color = "text-red-600";
-  }
-  
-  // Get random tips
-  const shuffled = [...funTips].sort(() => 0.5 - Math.random());
-  const tips = shuffled.slice(0, 5);
-  
-  return { score: percentage, message, color, tips };
-};
-
-export default function ResultsPage({ preference, answers, userData, onRetakeTest, onLogout }: ResultsPageProps) {
-  const [result, setResult] = useState<CompatibilityResult | null>(null);
-  const [showAnimation, setShowAnimation] = useState(false);
-  
+    if (preference.includes('passivo')) {
+      idealAnswers.butt_size = 'Média';
+      idealAnswers.butt_tightness = 'Apertada';
+      idealAnswers.likes_in_top = 'Personalidade';
+    }
+    // Pesos das perguntas (exemplo, pode ser expandido)
+    const questionWeights: { [key: string]: number } = {
+      hygiene: 1,
+      shower_before: 0.8,
+      work_life: 0.7,
+      relationship_type: 1,
+      sexual_frequency: 0.9,
+      penis_size: 0.7,
+      likes_in_bottom: 0.6,
+      sexual_intensity: 0.8,
+      butt_size: 0.7,
+      butt_tightness: 0.7,
+      likes_in_top: 0.6,
+      // Adicione mais conforme necessário
+    };
+    let totalWeight = 0;
+    let userScore = 0;
+    Object.keys(answers).forEach(questionId => {
+      const weight = questionWeights[questionId] || 0.5;
+      totalWeight += weight;
+      if (idealAnswers[questionId]) {
+        if (answers[questionId] === idealAnswers[questionId]) {
+          userScore += weight;
+        } else if (typeof answers[questionId] === 'string' && answers[questionId] && idealAnswers[questionId]) {
+          // Resposta parcialmente correta (exemplo: contém parte da resposta ideal)
+          if ((answers[questionId] as string).toLowerCase().includes(idealAnswers[questionId].toLowerCase().slice(0, 4))) {
+            userScore += weight * 0.5;
+          }
+        }
+      }
+    });
+    const percentage = totalWeight > 0 ? Math.round((userScore / totalWeight) * 100) : 0;
+    let message: string;
+    let color: string;
+    if (percentage === 100) {
+      message = "🎉 PERFEITO! Vocês são totalmente compatíveis! Alex está esperando por você! 💖";
+      color = "text-green-600";
+    } else if (percentage >= 90) {
+      message = "😊 Quase lá! Vocês têm muita compatibilidade, mas alguns ajustes podem ajudar.";
+      color = "text-yellow-600";
+    } else if (percentage >= 70) {
+      message = "🤔 Compatibilidade moderada. Há potencial, mas precisam conversar mais sobre expectativas.";
+      color = "text-orange-600";
+    } else {
+      message = "😢 Pouca compatibilidade no momento. Talvez vocês sejam melhores como amigos por enquanto.";
+      color = "text-red-600";
+    }
+    // Dicas aleatórias
+    const shuffled = [...funTips].sort(() => 0.5 - Math.random());
+    const tips = shuffled.slice(0, 5);
+    return { score: percentage, message, color, tips };
   useEffect(() => {
     const calculatedResult = calculateCompatibility(answers, preference);
     setResult(calculatedResult);

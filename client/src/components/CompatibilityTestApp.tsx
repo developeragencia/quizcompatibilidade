@@ -18,14 +18,19 @@ interface UserData {
 }
 
 export default function CompatibilityTestApp() {
+  // Este componente controla o fluxo principal do quiz de compatibilidade.
+  // Estados: tela atual, dados do usuário, intenção, preferência, respostas, loading e erro.
   const [currentState, setCurrentState] = useState<AppState>('welcome');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedIntention, setSelectedIntention] = useState<UserIntention | null>(null);
   const [selectedPreference, setSelectedPreference] = useState<SexualPreference | null>(null);
   const [questionnaireAnswers, setQuestionnaireAnswers] = useState<QuestionnaireAnswers | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Calculate age from birthdate
   const calculateAge = (birthdate: string): number => {
+  // Calcula idade a partir da data de nascimento
     const birth = new Date(birthdate);
     const today = new Date();
     let age = today.getFullYear() - birth.getFullYear();
@@ -40,6 +45,7 @@ export default function CompatibilityTestApp() {
 
   // Get zodiac sign from birthdate  
   const getZodiacSign = (birthdate: string): string => {
+  // Retorna o signo do usuário a partir da data de nascimento
     const birth = new Date(birthdate);
     const month = birth.getMonth() + 1;
     const day = birth.getDate();
@@ -76,10 +82,14 @@ export default function CompatibilityTestApp() {
   };
 
   const handleShowLogin = () => setCurrentState('login');
+  // Navegação entre telas
   const handleShowRegister = () => setCurrentState('register');
   const handleBack = () => setCurrentState('welcome');
   
   const handleLogin = async (instagram: string, password: string) => {
+  // Realiza login do usuário
+    setLoading(true);
+    setError(null);
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -88,15 +98,13 @@ export default function CompatibilityTestApp() {
         },
         body: JSON.stringify({ instagram, password }),
       });
-      
       if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || 'Erro no login');
+        const errorData = await response.json();
+        setError(errorData.error || 'Erro no login');
+        setLoading(false);
         return;
       }
-      
       const { user } = await response.json();
-      
       setUserData({
         id: user.id,
         name: user.name,
@@ -104,25 +112,27 @@ export default function CompatibilityTestApp() {
         age: user.age,
         zodiac: user.zodiac
       });
-      
       setCurrentState('intentions');
     } catch (error) {
-      console.error('Login error:', error);
-      alert('Erro de conex\u00e3o');
+      setError('Erro de conexão');
+    } finally {
+      setLoading(false);
     }
   };
   
   const handleRegister = async (data: {
+  // Realiza cadastro do usuário
     name: string;
     instagram: string;
     password: string;
     birthdate: string;
     accepted: boolean;
   }) => {
+    setLoading(true);
+    setError(null);
     try {
       const age = calculateAge(data.birthdate);
       const zodiac = getZodiacSign(data.birthdate);
-      
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -137,15 +147,13 @@ export default function CompatibilityTestApp() {
           zodiac
         }),
       });
-      
       if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || 'Erro no cadastro');
+        const errorData = await response.json();
+        setError(errorData.error || 'Erro no cadastro');
+        setLoading(false);
         return;
       }
-      
       const { user } = await response.json();
-      
       setUserData({
         id: user.id,
         name: user.name,
@@ -153,18 +161,20 @@ export default function CompatibilityTestApp() {
         age: user.age,
         zodiac: user.zodiac
       });
-      
       setCurrentState('intentions');
     } catch (error) {
-      console.error('Registration error:', error);
-      alert('Erro de conex\u00e3o');
+      setError('Erro de conexão');
+    } finally {
+      setLoading(false);
     }
   };
   
   const handleSelectPreference = async (preference: SexualPreference) => {
+  // Salva preferência sexual do usuário
+    setLoading(true);
+    setError(null);
     try {
       if (!userData) return;
-      
       const response = await fetch('/api/preferences', {
         method: 'POST',
         headers: {
@@ -175,29 +185,29 @@ export default function CompatibilityTestApp() {
           sexualPreference: preference
         }),
       });
-      
       if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || 'Erro ao salvar prefer\u00eancia');
+        const errorData = await response.json();
+        setError(errorData.error || 'Erro ao salvar preferência');
+        setLoading(false);
         return;
       }
-      
       setSelectedPreference(preference);
       setCurrentState('questionnaire');
     } catch (error) {
-      console.error('Preference save error:', error);
-      alert('Erro de conex\u00e3o');
+      setError('Erro de conexão');
+    } finally {
+      setLoading(false);
     }
   };
   
   const handleQuestionnaireComplete = async (answers: QuestionnaireAnswers) => {
+  // Salva respostas do questionário
+    setLoading(true);
+    setError(null);
     try {
       if (!userData) return;
-      
-      // For friendship intentions, preference is not required
       const isFriendship = selectedIntention?.startsWith('AMIZADE_');
       if (!isFriendship && !selectedPreference) return;
-      
       const response = await fetch('/api/questionnaire', {
         method: 'POST',
         headers: {
@@ -209,22 +219,23 @@ export default function CompatibilityTestApp() {
           answers
         }),
       });
-      
       if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || 'Erro ao salvar question\u00e1rio');
+        const errorData = await response.json();
+        setError(errorData.error || 'Erro ao salvar questionário');
+        setLoading(false);
         return;
       }
-      
       setQuestionnaireAnswers(answers);
       setCurrentState('results');
     } catch (error) {
-      console.error('Questionnaire save error:', error);
-      alert('Erro de conex\u00e3o');
+      setError('Erro de conexão');
+    } finally {
+      setLoading(false);
     }
   };
   
   const handleSelectIntention = (intention: UserIntention) => {
+  // Seleciona intenção do usuário
     setSelectedIntention(intention);
     // For friendship intentions, skip preferences and go directly to questionnaire
     if (intention.startsWith('AMIZADE_')) {
@@ -235,6 +246,7 @@ export default function CompatibilityTestApp() {
   };
   
   const handleRetakeTest = () => {
+  // Permite refazer o teste
     setSelectedIntention(null);
     setSelectedPreference(null);
     setQuestionnaireAnswers(null);
@@ -242,6 +254,7 @@ export default function CompatibilityTestApp() {
   };
   
   const handleLogout = () => {
+  // Realiza logout do usuário
     setUserData(null);
     setSelectedIntention(null);
     setSelectedPreference(null);
@@ -250,89 +263,29 @@ export default function CompatibilityTestApp() {
   };
 
   // Render current state
-  switch (currentState) {
-    case 'welcome':
-      return (
-        <WelcomePage 
-          onShowLogin={handleShowLogin}
-          onShowRegister={handleShowRegister}
-        />
-      );
-      
-    case 'login':
-      return (
-        <LoginForm 
-          onBack={handleBack}
-          onLogin={handleLogin}
-        />
-      );
-      
-    case 'register':
-      return (
-        <RegisterForm 
-          onBack={handleBack}
-          onRegister={handleRegister}
-        />
-      );
-      
-    case 'intentions':
-      return (
-        <IntentionSelection 
-          onBack={handleLogout}
-          onNext={handleSelectIntention}
-        />
-      );
-      
-    case 'preferences':
-      return (
-        <PreferenceSelection 
-          onBack={() => setCurrentState('intentions')}
-          onSelectPreference={handleSelectPreference}
-        />
-      );
-      
-    case 'questionnaire':
-      const isFriendship = selectedIntention?.startsWith('AMIZADE_');
-      
-      // For friendship, only intention is required; for others, both intention and preference are required
-      if (!selectedIntention || (!isFriendship && !selectedPreference)) {
-        setCurrentState(isFriendship ? 'intentions' : 'preferences');
-        return null;
-      }
-      
-      return (
-        <DynamicQuestionnaire 
-          intention={selectedIntention}
-          preference={selectedPreference || undefined}
-          onBack={() => setCurrentState(isFriendship ? 'intentions' : 'preferences')}
-          onComplete={handleQuestionnaireComplete}
-        />
-      );
-      
-    case 'results':
-      const isFriendshipResult = selectedIntention?.startsWith('AMIZADE_');
-      
-      // For friendship, preference is optional; for others, it's required
-      if (!userData || !selectedIntention || (!isFriendshipResult && !selectedPreference) || !questionnaireAnswers) {
-        setCurrentState('welcome');
-        return null;
-      }
-      return (
-        <ResultsPage 
-          preference={selectedPreference || undefined}
-          answers={questionnaireAnswers}
-          userData={userData}
-          onRetakeTest={handleRetakeTest}
-          onLogout={handleLogout}
-        />
-      );
-      
-    default:
-      return (
-        <WelcomePage 
-          onShowLogin={handleShowLogin}
-          onShowRegister={handleShowRegister}
-        />
-      );
+  // Feedback visual de loading e erro
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-primary/90 to-accent">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-lg">Carregando...</p>
+        </div>
+      </div>
+    );
   }
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-primary/90 to-accent">
+        <div className="text-center">
+          <div className="rounded-full h-16 w-16 bg-destructive mx-auto mb-4 flex items-center justify-center">
+            <span className="text-white text-3xl">!</span>
+          </div>
+          <p className="text-lg text-destructive font-bold mb-2">{error}</p>
+          <button className="mt-4 px-4 py-2 bg-primary text-white rounded" onClick={() => setError(null)}>Tentar novamente</button>
+        </div>
+      </div>
+    );
+  }
+  // ...existing code...
 }
